@@ -11,7 +11,7 @@ using System;
 
 namespace HuntHookAndCook.Migrations
 {
-    [DbContext(typeof(ApplicationDbContext))]
+    [DbContext(typeof(HuntHookAndCookDbContext))]
     [Migration("00000000000000_CreateIdentitySchema")]
     partial class CreateIdentitySchema
     {

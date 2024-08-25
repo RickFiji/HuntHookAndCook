@@ -1,0 +1,43 @@
+﻿<h3>RecipeCard</h3>
+@using MudBlazor
+
+<MudCard>
+    <MudCardMedia Image=@ImagePath Height="200" />
+    <MudCardContent>
+        <MudText Typo="Typo.h5">@Title</MudText>
+        <MudText Typo="Typo.body2">@Description</MudText>
+        <MudDivider />
+        <MudText Typo="Typo.h6">Ingredients</MudText>
+        <MudList T="string">
+            @foreach (var ingredient in Ingredients)
+            {
+                <MudListItem>@ingredient</MudListItem>
+            }
+        </MudList>
+        <MudDivider />
+        <MudText Typo="Typo.h6">Steps</MudText>
+        <MudList T="string">
+            @foreach (var step in Steps)
+            {
+                <MudListItem>@step</MudListItem>
+            }
+        </MudList>
+    </MudCardContent>
+</MudCard>
+
+@code {
+    [Parameter]
+    public string? Title { get; set; }
+
+    [Parameter]
+    public string? Description { get; set; }
+
+    [Parameter]
+    public List<string> Ingredients { get; set; } = new List<string>();
+
+    [Parameter]
+    public List<string> Steps { get; set; } = new List<string>();
+
+    [Parameter]
+    public string? ImagePath { get; set; }
+}

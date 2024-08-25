@@ -39,6 +39,15 @@
 <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" EndIcon="@Icons.Material.Filled.Add">Add</MudButton>
 <MudButton Variant="Variant.Filled" Color="Color.Secondary" Size="Size.Large" EndIcon="@Icons.Material.Filled.Add">Add</MudButton>
 
-@code {
+<MudContainer>
+    <RecipeCard Title="Chocolate Cake"
+                Description="A delicious and rich chocolate cake recipe."
+                Ingredients=@ingredients
+                Steps=@steps
+                ImagePath="Images/Deer1.jpeg" />
+</MudContainer>
 
+@code {
+    private List<string> ingredients = new List<string> { "2 cups flour", "1 cup sugar", "1 cup cocoa powder", "2 eggs", "1 cup milk" };
+    private List<string> steps = new List<string> { "Mix dry ingredients", "Add wet ingredients", "Bake at 350 degrees for 30 minutes" };
 }
