@@ -19,7 +19,7 @@
 
 
   <ItemGroup>
-    <Content Update="wwwroot\Images\Deer1.jpeg">
+    <Content Update="wwwroot\Images\Deer1.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

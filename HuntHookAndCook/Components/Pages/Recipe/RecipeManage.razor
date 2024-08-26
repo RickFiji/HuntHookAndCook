@@ -1,0 +1,115 @@
+﻿@page "/recipes/manage"
+@using HuntHookAndCook.Models
+@using HuntHookAndCook.Data
+@using Microsoft.EntityFrameworkCore
+@inject HuntHookAndCookDbContext DbContext
+@inject NavigationManager Navigation
+@inject ISnackbar Snackbar
+
+<MudContainer>
+    <MudButton Variant="Variant.Outlined" Color="Color.Primary" OnClick="GoBack" Class="mb-5">
+        <MudIcon Icon="@Icons.Material.Filled.ArrowBack" /> Back to Recipe Categories
+    </MudButton>
+    <MudText Typo="Typo.h4">Manage Recipes</MudText>
+    <MudTable Items="Recipes" Hover="true" Class="mt-4 mb-5">
+        <HeaderContent>
+            <MudTh>Title</MudTh>
+            <MudTh>Category</MudTh>
+            <MudTh>Description</MudTh>
+            <MudTh>Actions</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Title">@context.Title</MudTd>
+            <MudTd DataLabel="Category">@context.Category</MudTd>
+            <MudTd DataLabel="Description">@context.Description</MudTd>
+            <MudTd>
+                <MudButton Variant="Variant.Filled" Color="Color.Secondary" EndIcon="@Icons.Material.Filled.Edit" OnClick="@(() => EditRecipe(context))">Edit</MudButton>
+                <MudButton Variant="Variant.Filled" Color="Color.Error" EndIcon="@Icons.Material.Filled.Delete" OnClick="@(() => DeleteRecipe(context))">Delete</MudButton>
+            </MudTd>
+        </RowTemplate>
+    </MudTable>
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="AddRecipe" EndIcon="@Icons.Material.Filled.Add">Add New Recipe</MudButton>
+</MudContainer>
+
+@code {
+    private List<RecipeDefinition> Recipes;
+    private RecipeDefinition CurrentRecipe = new RecipeDefinition();
+    private bool IsDialogVisible;
+    private MudForm Form;
+    private string ImageBase64;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Recipes = await DbContext.Recipe.OrderBy(x => x.Category).ThenBy(x => x.Title).ToListAsync();
+    }
+
+    private void AddRecipe()
+    {
+        Navigation.NavigateTo("recipe/manage/details/");
+    }
+
+    private void EditRecipe(RecipeDefinition recipe)
+    {
+        Navigation.NavigateTo($"recipe/manage/details/{recipe.Id}");
+    }
+
+    private async Task DeleteRecipe(RecipeDefinition recipe)
+    {
+        DbContext.Recipe.Remove(recipe);
+        await DbContext.SaveChangesAsync();
+        Recipes = await DbContext.Recipe.Include(r => r.Ingredients).Include(r => r.Steps).ToListAsync();
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        if (!string.IsNullOrEmpty(ImageBase64))
+        {
+            CurrentRecipe.Image = Convert.FromBase64String(ImageBase64);
+        }
+
+        if (CurrentRecipe.Id == 0)
+        {
+            DbContext.Recipe.Add(CurrentRecipe);
+        }
+        else
+        {
+            DbContext.Recipe.Update(CurrentRecipe);
+        }
+
+        await DbContext.SaveChangesAsync();
+        Recipes = await DbContext.Recipe.Include(r => r.Ingredients).Include(r => r.Steps).ToListAsync();
+        Snackbar.Add("Recipe saved successfully!", Severity.Success);
+        CloseDialog();
+    }
+
+    private void CloseDialog()
+    {
+        IsDialogVisible = false;
+        CurrentRecipe = new RecipeDefinition();
+    }
+
+    private void AddIngredient()
+    {
+        CurrentRecipe.Ingredients.Add(new IngredientDefinition());
+    }
+
+    private void RemoveIngredient(IngredientDefinition ingredient)
+    {
+        CurrentRecipe.Ingredients.Remove(ingredient);
+    }
+
+    private void AddStep()
+    {
+        CurrentRecipe.Steps.Add(new StepDefinition());
+    }
+
+    private void RemoveStep(StepDefinition step)
+    {
+        CurrentRecipe.Steps.Remove(step);
+    }
+
+    private void GoBack()
+    {
+        Navigation.NavigateTo("/recipes");
+    }
+}
