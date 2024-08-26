@@ -84,7 +84,11 @@
 
     protected override async Task OnInitializedAsync()
     {
-        recipes = await DbContext.Recipe.Where(x => x.Category == Category).ToListAsync();
+        recipes = await DbContext.Recipe
+                                 .Include(x => x.Ingredients)
+                                 .Include(x => x.Steps)
+                                 .Where(x => x.Category == Category)
+                                 .ToListAsync();
     }
 
     private void ShowRecipeDetails(RecipeDefinition recipe)
