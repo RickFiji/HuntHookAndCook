@@ -32,11 +32,10 @@
 </MudContainer>
 
 @code {
-    private List<RecipeDefinition> Recipes;
+    private List<RecipeDefinition>? Recipes;
     private RecipeDefinition CurrentRecipe = new RecipeDefinition();
     private bool IsDialogVisible;
-    private MudForm Form;
-    private string ImageBase64;
+    private MudForm? Form;
 
     protected override async Task OnInitializedAsync()
     {
@@ -62,11 +61,6 @@
 
     private async Task HandleValidSubmit()
     {
-        if (!string.IsNullOrEmpty(ImageBase64))
-        {
-            CurrentRecipe.Image = Convert.FromBase64String(ImageBase64);
-        }
-
         if (CurrentRecipe.Id == 0)
         {
             DbContext.Recipe.Add(CurrentRecipe);
@@ -90,22 +84,30 @@
 
     private void AddIngredient()
     {
+        if (CurrentRecipe.Ingredients == null)
+            CurrentRecipe.Ingredients = new List<IngredientDefinition>();
+            
         CurrentRecipe.Ingredients.Add(new IngredientDefinition());
     }
 
     private void RemoveIngredient(IngredientDefinition ingredient)
     {
-        CurrentRecipe.Ingredients.Remove(ingredient);
+        if (CurrentRecipe.Ingredients != null)
+            CurrentRecipe.Ingredients.Remove(ingredient);
     }
 
     private void AddStep()
     {
+        if (CurrentRecipe.Steps == null)
+            CurrentRecipe.Steps = new List<StepDefinition>();
+
         CurrentRecipe.Steps.Add(new StepDefinition());
     }
 
     private void RemoveStep(StepDefinition step)
     {
-        CurrentRecipe.Steps.Remove(step);
+        if (CurrentRecipe.Steps != null)
+            CurrentRecipe.Steps.Remove(step);
     }
 
     private void GoBack()

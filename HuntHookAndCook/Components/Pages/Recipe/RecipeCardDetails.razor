@@ -10,7 +10,7 @@
     <MudText Typo="Typo.h4">Recipe Details</MudText>
     <MudForm @ref="form" OnValidSubmit="HandleValidSubmit">
         <MudTextField @bind-Value="recipe.Title" Label="Title" Required="true" />
-        @* <MudTextField @bind-Value="recipe.Category.Name" Label="Category" Required="true" /> *@
+        <MudTextField @bind-Value="recipe.Category.Name" Label="Category" Required="true" />
         <MudTextField @bind-Value="recipe.ShortDescription" Label="Short Description" Required="true" />
         <MudTextField @bind-Value="recipe.LongDescription" Label="Long Description" Required="true" />
         <MudTextField @bind-Value="imageBase64" Label="Image (Base64)" />
@@ -18,23 +18,29 @@
         <MudGrid Spacing="20" Class="pt-5 pb-10">
             <MudItem xs="12" md="6" Class="border-grid">
                 <MudText Typo="Typo.h6" Class="mt-4">Ingredients</MudText>
-                @foreach (var ingredient in recipe.Ingredients)
+                @if (recipe.Ingredients != null)
                 {
-                    <MudTextField @bind-Value="ingredient.Name" Label="Name" Required="true" />
-                    <MudTextField @bind-Value="ingredient.Quantity" Label="Quantity" />
-                    <MudTextField @bind-Value="ingredient.Unit" Label="Unit" />
-                    <MudButton Variant="Variant.Outlined" Color="Color.Error" OnClick="@(() => RemoveIngredient(ingredient))">Remove</MudButton>
+                    @foreach (var ingredient in recipe.Ingredients)
+                    {
+                        <MudTextField @bind-Value="ingredient.Name" Label="Name" Required="true" />
+                        <MudTextField @bind-Value="ingredient.Quantity" Label="Quantity" />
+                        <MudTextField @bind-Value="ingredient.Unit" Label="Unit" />
+                        <MudButton Variant="Variant.Outlined" Color="Color.Error" OnClick="@(() => RemoveIngredient(ingredient))">Remove</MudButton>
+                    }
                 }
                 <MudButton Variant="Variant.Outlined" Color="Color.Primary" OnClick="AddIngredient">Add Ingredient</MudButton>
             </MudItem>
 
             <MudItem xs="12" md="6" Class="border-grid">
                 <MudText Typo="Typo.h6" Class="mt-4">Steps</MudText>
-                @foreach (var step in recipe.Steps)
+                @if (recipe.Steps != null)
                 {
-                    <MudTextField @bind-Value="step.Order" Label="Order" Required="true" />
-                    <MudTextField @bind-Value="step.Description" Label="Description" Required="true" />
-                    <MudButton Variant="Variant.Outlined" Color="Color.Error" OnClick="@(() => RemoveStep(step))">Remove</MudButton>
+                    @foreach (var step in recipe.Steps)
+                    {
+                        <MudTextField @bind-Value="step.Order" Label="Order" Required="true" />
+                        <MudTextField @bind-Value="step.Description" Label="Description" Required="true" />
+                        <MudButton Variant="Variant.Outlined" Color="Color.Error" OnClick="@(() => RemoveStep(step))">Remove</MudButton>
+                    }
                 }
                 <MudButton Variant="Variant.Outlined" Color="Color.Primary" OnClick="AddStep">Add Step</MudButton>
             </MudItem>
@@ -48,12 +54,12 @@
 @code {
     [Parameter] public int Id { get; set; }
     private RecipeDefinition recipe = new RecipeDefinition()
-        {
-            Ingredients = new List<IngredientDefinition>(),
-            Steps = new List<StepDefinition>()
+    {
+        Ingredients = new List<IngredientDefinition>(),
+        Steps = new List<StepDefinition>()
     };
-    private MudForm form;
-    private string imageBase64;
+    private MudForm? form;
+    private string? imageBase64;
 
     protected override async Task OnInitializedAsync()
     {
@@ -62,10 +68,10 @@
             .Include(r => r.Ingredients)
             .Include(r => r.Steps)
             .FirstOrDefaultAsync(r => r.Id == Id) ?? new RecipeDefinition
-                {
-                    Ingredients = new List<IngredientDefinition>(),
-                    Steps = new List<StepDefinition>()
-                };
+            {
+                Ingredients = new List<IngredientDefinition>(),
+                Steps = new List<StepDefinition>()
+            };
 
         imageBase64 = recipe.Image != null ? Convert.ToBase64String(recipe.Image) : string.Empty;
     }
@@ -93,21 +99,23 @@
 
     private void AddIngredient()
     {
+        recipe.Ingredients ??= new List<IngredientDefinition>();
         recipe.Ingredients.Add(new IngredientDefinition());
     }
 
     private void RemoveIngredient(IngredientDefinition ingredient)
     {
-        recipe.Ingredients.Remove(ingredient);
+        recipe.Ingredients?.Remove(ingredient);
     }
 
     private void AddStep()
     {
+        recipe.Steps ??= new List<StepDefinition>();
         recipe.Steps.Add(new StepDefinition());
     }
 
     private void RemoveStep(StepDefinition step)
     {
-        recipe.Steps.Remove(step);
+        recipe.Steps?.Remove(step);
     }
 }
