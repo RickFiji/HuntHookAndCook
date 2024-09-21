@@ -20,7 +20,7 @@
         </HeaderContent>
         <RowTemplate>
             <MudTd DataLabel="Title">@context.Title</MudTd>
-            <MudTd DataLabel="Category">@context.Category</MudTd>
+            <MudTd DataLabel="Category">@context.Category?.Name</MudTd>
             <MudTd DataLabel="Description">@context.LongDescription</MudTd>
             <MudTd>
                 <MudButton Variant="Variant.Filled" Color="Color.Secondary" EndIcon="@Icons.Material.Filled.Edit" OnClick="@(() => EditRecipe(context))">Edit</MudButton>
@@ -34,12 +34,14 @@
 @code {
     private List<RecipeDefinition>? Recipes;
     private RecipeDefinition CurrentRecipe = new RecipeDefinition();
-    private bool IsDialogVisible;
-    private MudForm? Form;
 
     protected override async Task OnInitializedAsync()
     {
-        Recipes = await DbContext.Recipe.OrderBy(x => x.Category).ThenBy(x => x.Title).ToListAsync();
+        Recipes = await DbContext.Recipe
+            .Include(x => x.Category)
+            .OrderBy(x => x.Category.Name)
+            .ThenBy(x => x.Title)
+            .ToListAsync();
     }
 
     private void AddRecipe()
@@ -56,58 +58,11 @@
     {
         DbContext.Recipe.Remove(recipe);
         await DbContext.SaveChangesAsync();
-        Recipes = await DbContext.Recipe.Include(r => r.Ingredients).Include(r => r.Steps).ToListAsync();
-    }
-
-    private async Task HandleValidSubmit()
-    {
-        if (CurrentRecipe.Id == 0)
-        {
-            DbContext.Recipe.Add(CurrentRecipe);
-        }
-        else
-        {
-            DbContext.Recipe.Update(CurrentRecipe);
-        }
-
-        await DbContext.SaveChangesAsync();
-        Recipes = await DbContext.Recipe.Include(r => r.Ingredients).Include(r => r.Steps).ToListAsync();
-        Snackbar.Add("Recipe saved successfully!", Severity.Success);
-        CloseDialog();
-    }
-
-    private void CloseDialog()
-    {
-        IsDialogVisible = false;
-        CurrentRecipe = new RecipeDefinition();
-    }
-
-    private void AddIngredient()
-    {
-        if (CurrentRecipe.Ingredients == null)
-            CurrentRecipe.Ingredients = new List<IngredientDefinition>();
-            
-        CurrentRecipe.Ingredients.Add(new IngredientDefinition());
-    }
-
-    private void RemoveIngredient(IngredientDefinition ingredient)
-    {
-        if (CurrentRecipe.Ingredients != null)
-            CurrentRecipe.Ingredients.Remove(ingredient);
-    }
-
-    private void AddStep()
-    {
-        if (CurrentRecipe.Steps == null)
-            CurrentRecipe.Steps = new List<StepDefinition>();
-
-        CurrentRecipe.Steps.Add(new StepDefinition());
-    }
-
-    private void RemoveStep(StepDefinition step)
-    {
-        if (CurrentRecipe.Steps != null)
-            CurrentRecipe.Steps.Remove(step);
+        Recipes = await DbContext.Recipe
+            .Include(r => r.Category)
+            .Include(r => r.Ingredients)
+            .Include(r => r.Steps)
+            .ToListAsync();
     }
 
     private void GoBack()

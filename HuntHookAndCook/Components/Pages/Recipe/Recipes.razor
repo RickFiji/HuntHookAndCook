@@ -4,6 +4,8 @@
 <MudText Typo="Typo.h3" Class="ml-3">Recipes</MudText>
 <br />
 <MudContainer Class="mt-8 px-4" MaxWidth="MaxWidth.False">
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" EndIcon="@Icons.Material.Filled.Settings" Href="/recipes/manage">Manage</MudButton>
+    <br />
     <MudGrid>
         <MudItem xs="12" sm="6" md="4">
             <MudPaper Elevation="2" Class="pa-4" Style="height: 100%;">
@@ -55,8 +57,6 @@
         </MudItem>
     </MudGrid>
 </MudContainer>
-<br />
-<MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" EndIcon="@Icons.Material.Filled.Settings" Href="/recipes/manage">Manage</MudButton>
 
 <AuthorizeView>
     <Authorized>
