@@ -1,26 +1,31 @@
-﻿--select * from dbo.Recipe
+﻿--select * from dbo.Category
+--select * from dbo.Recipe
 --select * from dbo.Ingredient
 --select * from dbo.Step
 
 select 
-	r.Category,
+	c.Name as CategoryName,
 	r.Title as RecipeName,
 	i.Name as IngredientName,
 	i.Quantity,
 	i.Unit
 from dbo.Recipe r
+left join dbo.Category c on c.Id = r.CategoryId 
 left join dbo.Ingredient i on r.Id = i.RecipeId
 
 select 
-	r.Category,
+	c.Name as CategoryName,
 	r.Title as RecipeName,
 	s.[Order],
 	s.Description
 from dbo.Recipe r
+left join dbo.Category c on c.Id = r.CategoryId 
 left join dbo.Step s on r.Id = s.RecipeId
 
---Insert into dbo.Recipe values ('Venison','Soup','Yummy',null)
-declare @recipeId int = (select top 1 Id from dbo.Recipe )
+--Insert into dbo.Category values ('Fish'),('Venison'),('Boar'),('Bear'),('Bobcat')--,('')
+--declare @categoryId int = (select top 1 Id from dbo.Category where Name = 'Venison')
+--Insert into dbo.Recipe values (@categoryId,'Elk Soup','Very yummy!', 'Let me tell you a short story about this soup.',null)
+--declare @recipeId int = (select top 1 Id from dbo.Recipe )
 --Insert into dbo.Ingredient values 
 --	('Venison',1,'lbs',@recipeId),
 --	('Water',4,'cups',@recipeId),

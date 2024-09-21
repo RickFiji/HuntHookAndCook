@@ -9,6 +9,7 @@ namespace HuntHookAndCook.Data
         public HuntHookAndCookDbContext(DbContextOptions<HuntHookAndCookDbContext> options) : base(options) { }
 
         public DbSet<RecipeDefinition> Recipe { get; set; }
+        public DbSet<CategoryDefinition> Category { get; set; }
         public DbSet<IngredientDefinition> Ingredient { get; set; }
         public DbSet<StepDefinition> Step { get; set; }
 
@@ -23,6 +24,9 @@ namespace HuntHookAndCook.Data
                 .HasMany(r => r.Steps)
                 .WithOne(s => s.Recipe)
                 .HasForeignKey(s => s.RecipeId);
+
+            modelBuilder.Entity<RecipeDefinition>()
+                .HasOne(r => r.Category);
         }
     }
 }

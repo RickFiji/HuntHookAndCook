@@ -10,8 +10,9 @@
     <MudText Typo="Typo.h4">Recipe Details</MudText>
     <MudForm @ref="form" OnValidSubmit="HandleValidSubmit">
         <MudTextField @bind-Value="recipe.Title" Label="Title" Required="true" />
-        <MudTextField @bind-Value="recipe.Category" Label="Category" Required="true" />
-        <MudTextField @bind-Value="recipe.Description" Label="Description" Required="true" />
+        @* <MudTextField @bind-Value="recipe.Category.Name" Label="Category" Required="true" /> *@
+        <MudTextField @bind-Value="recipe.ShortDescription" Label="Short Description" Required="true" />
+        <MudTextField @bind-Value="recipe.LongDescription" Label="Long Description" Required="true" />
         <MudTextField @bind-Value="imageBase64" Label="Image (Base64)" />
                 
         <MudGrid Spacing="20" Class="pt-5 pb-10">
@@ -57,6 +58,7 @@
     protected override async Task OnInitializedAsync()
     {
         recipe = await DbContext.Recipe
+            .Include(r => r.Category)
             .Include(r => r.Ingredients)
             .Include(r => r.Steps)
             .FirstOrDefaultAsync(r => r.Id == Id) ?? new RecipeDefinition

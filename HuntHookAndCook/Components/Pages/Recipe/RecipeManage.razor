@@ -21,7 +21,7 @@
         <RowTemplate>
             <MudTd DataLabel="Title">@context.Title</MudTd>
             <MudTd DataLabel="Category">@context.Category</MudTd>
-            <MudTd DataLabel="Description">@context.Description</MudTd>
+            <MudTd DataLabel="Description">@context.LongDescription</MudTd>
             <MudTd>
                 <MudButton Variant="Variant.Filled" Color="Color.Secondary" EndIcon="@Icons.Material.Filled.Edit" OnClick="@(() => EditRecipe(context))">Edit</MudButton>
                 <MudButton Variant="Variant.Filled" Color="Color.Error" EndIcon="@Icons.Material.Filled.Delete" OnClick="@(() => DeleteRecipe(context))">Delete</MudButton>

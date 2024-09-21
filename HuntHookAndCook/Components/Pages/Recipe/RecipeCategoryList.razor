@@ -18,7 +18,7 @@
         <RowTemplate>
             <MudTd DataLabel="Title">@context.Title</MudTd>
             <MudTd DataLabel="Category">@context.Category</MudTd>
-            <MudTd DataLabel="Description">@context.Description</MudTd>
+            <MudTd DataLabel="Description">@context.LongDescription</MudTd>
             <MudTd>
                 <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(() => ShowRecipeDetails(context))">
                     View Details
@@ -37,7 +37,7 @@
                     <MudText Typo="Typo.h5">@selectedRecipe.Title</MudText>
                 </MudCardHeader>
                 <MudCardContent>
-                    <MudText Typo="Typo.body1">@selectedRecipe.Description</MudText>
+                    <MudText Typo="Typo.body1">@selectedRecipe.LongDescription</MudText>
                     <MudText Typo="Typo.subtitle1">Category: @selectedRecipe.Category</MudText>
                     @if (selectedRecipe.Image != null)
                     {
@@ -87,14 +87,14 @@
         recipes = await DbContext.Recipe
                                  .Include(x => x.Ingredients)
                                  .Include(x => x.Steps)
-                                 .Where(x => x.Category == Category)
+                                 .Where(x => x.Category.Name == Category)
                                  .ToListAsync();
     }
 
     private void ShowRecipeDetails(RecipeDefinition recipe)
     {
         selectedRecipe = recipe;
-        isDialogVisible = true;
+        Navigation.NavigateTo($"/recipes/{recipe.Id}");
     }
 
     private void CloseDialog()
