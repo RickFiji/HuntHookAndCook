@@ -75,9 +75,8 @@
             return;
         }
 
-        if (recipe.Image != null)
-        {
-            imageSrc = $"data:image/png;base64,{Convert.ToBase64String(recipe.Image)}";
-        }
+        imageSrc = recipe.Image != null
+            ? $"data:image/png;base64,{Convert.ToBase64String(recipe.Image)}"
+            : "Images/image-not-found.jpg";
     }
 }

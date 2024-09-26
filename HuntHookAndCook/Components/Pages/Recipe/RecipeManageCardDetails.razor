@@ -1,0 +1,146 @@
+﻿@page "/recipe/manage/details/{Id:int?}"
+@using HuntHookAndCook.Models
+@using HuntHookAndCook.Data
+@using Microsoft.EntityFrameworkCore
+@inject HuntHookAndCookDbContext DbContext
+@inject NavigationManager Navigation
+@inject ISnackbar Snackbar
+
+<MudContainer>
+    <MudText Typo="Typo.h4">Recipe Details</MudText>
+    <MudForm @ref="form" OnValidSubmit="HandleValidSubmit">
+        <MudTextField @bind-Value="recipe.Title" Label="Title" Required="true" Class="mb-4" />
+        <MudTextField @bind-Value="categoryName" Label="Category" Required="true" Class="mb-4" />
+        <MudTextField @bind-Value="recipe.ShortDescription" Label="Short Description" Required="true" Lines="2" Class="mb-4" />
+        <MudTextField @bind-Value="recipe.LongDescription" Label="Long Description" Required="true" Lines="5" Class="mb-4" />
+
+        <MudText Typo="Typo.h6" Class="mt-4">Image</MudText>
+        @if (!string.IsNullOrEmpty(imageBase64))
+        {
+            <MudImage Src="@imageBase64" Alt="Recipe Image" Width="200" Class="mb-4" />
+        }
+        <InputFile OnChange="HandleImageUpload" Class="mb-4" />
+
+        <MudGrid Spacing="20" Class="pt-5 pb-10">
+            <MudItem xs="12" md="6" Class="border-grid">
+                <MudText Typo="Typo.h6" Class="mt-4">Ingredients</MudText>
+                @if (recipe.Ingredients != null)
+                {
+                    @foreach (var ingredient in recipe.Ingredients)
+                    {
+                        <MudTextField @bind-Value="ingredient.Name" Label="Name" Required="true" Class="mb-4" />
+                        <MudTextField @bind-Value="ingredient.Quantity" Label="Quantity" Class="mb-4" />
+                        <MudTextField @bind-Value="ingredient.Unit" Label="Unit" Class="mb-4" />
+                        <MudButton Variant="Variant.Outlined" Color="Color.Error" OnClick="@(() => RemoveIngredient(ingredient))" Class="mb-4">Remove</MudButton>
+                    }
+                }
+                <MudButton Variant="Variant.Outlined" Color="Color.Primary" OnClick="AddIngredient" Class="mb-4">Add Ingredient</MudButton>
+            </MudItem>
+
+            <MudItem xs="12" md="6" Class="border-grid">
+                <MudText Typo="Typo.h6" Class="mt-4">Steps</MudText>
+                @if (recipe.Steps != null)
+                {
+                    @foreach (var step in recipe.Steps)
+                    {
+                        <MudTextField @bind-Value="step.Order" Label="Order" Required="true" Class="mb-4" />
+                        <MudTextField @bind-Value="step.Description" Label="Description" Required="true" Class="mb-4" />
+                        <MudButton Variant="Variant.Outlined" Color="Color.Error" OnClick="@(() => RemoveStep(step))" Class="mb-4">Remove</MudButton>
+                    }
+                }
+                <MudButton Variant="Variant.Outlined" Color="Color.Primary" OnClick="AddStep" Class="mb-4">Add Step</MudButton>
+            </MudItem>
+        </MudGrid>
+
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" Type="Submit" ButtonType="ButtonType.Submit" Class="mb-4">Save</MudButton>
+        <MudButton Variant="Variant.Outlined" Color="Color.Secondary" OnClick="@(() => Navigation.NavigateTo("/recipes/manage"))" Class="mb-4">Cancel</MudButton>
+    </MudForm>
+</MudContainer>
+
+@code {
+    [Parameter] public int? Id { get; set; }
+    private RecipeDefinition recipe = new RecipeDefinition()
+    {
+        Ingredients = new List<IngredientDefinition>(),
+        Steps = new List<StepDefinition>()
+    };
+    private MudForm? form;
+    private string? imageBase64;
+    private string categoryName = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (Id.HasValue)
+        {
+            recipe = await DbContext.Recipe
+                .Include(r => r.Category)
+                .Include(r => r.Ingredients)
+                .Include(r => r.Steps)
+                .FirstOrDefaultAsync(r => r.Id == Id.Value) ?? new RecipeDefinition
+                {
+                    Ingredients = new List<IngredientDefinition>(),
+                    Steps = new List<StepDefinition>()
+                };
+
+            imageBase64 = recipe.Image != null ? Convert.ToBase64String(recipe.Image) : string.Empty;
+            categoryName = recipe.Category?.Name ?? string.Empty;
+        }
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        if (!string.IsNullOrEmpty(imageBase64))
+        {
+            recipe.Image = Convert.FromBase64String(imageBase64);
+        }
+
+        if (recipe.Category == null)
+        {
+            recipe.Category = new CategoryDefinition();
+        }
+        recipe.Category.Name = categoryName;
+
+        if (recipe.Id == 0)
+        {
+            DbContext.Recipe.Add(recipe);
+        }
+        else
+        {
+            DbContext.Recipe.Update(recipe);
+        }
+
+        await DbContext.SaveChangesAsync();
+        Snackbar.Add("Recipe saved successfully!", Severity.Success);
+        Navigation.NavigateTo("/recipes/manage");
+    }
+
+    private async Task HandleImageUpload(InputFileChangeEventArgs e)
+    {
+        var file = e.File;
+        var buffer = new byte[file.Size];
+        await file.OpenReadStream().ReadAsync(buffer);
+        imageBase64 = Convert.ToBase64String(buffer);
+    }
+
+    private void AddIngredient()
+    {
+        recipe.Ingredients ??= new List<IngredientDefinition>();
+        recipe.Ingredients.Add(new IngredientDefinition());
+    }
+
+    private void RemoveIngredient(IngredientDefinition ingredient)
+    {
+        recipe.Ingredients?.Remove(ingredient);
+    }
+
+    private void AddStep()
+    {
+        recipe.Steps ??= new List<StepDefinition>();
+        recipe.Steps.Add(new StepDefinition());
+    }
+
+    private void RemoveStep(StepDefinition step)
+    {
+        recipe.Steps?.Remove(step);
+    }
+}

@@ -1,0 +1,78 @@
+﻿@page "/recipes/search"
+@using HuntHookAndCook.Models
+@using HuntHookAndCook.Data
+@using Microsoft.AspNetCore.WebUtilities
+@using Microsoft.EntityFrameworkCore
+@inject HuntHookAndCookDbContext DbContext
+@inject NavigationManager Navigation
+
+<MudContainer>
+    <MudTextField @bind-Value="title" Label="Search by Title" Variant="Variant.Outlined" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" OnKeyUp="SearchRecipes" Class="mb-4" />
+    <MudButtonGroup Exclusive="true" Class="mb-4">
+        @foreach (var cat in categories)
+        {
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="() => SelectCategory(cat.Name)" Class="mr-2">
+                @cat.Name
+            </MudButton>
+        }
+    </MudButtonGroup>
+    <MudGrid>
+        @foreach (var recipe in filteredRecipes)
+        {
+            <MudItem xs="12" sm="6" md="4" lg="3">
+                <RecipeCardThumbnail Recipe="recipe" />
+            </MudItem>
+        }
+    </MudGrid>
+</MudContainer>
+
+@code {
+    private string? category;
+    private string? title;
+    private List<RecipeDefinition> recipes = new List<RecipeDefinition>();
+    private List<RecipeDefinition> filteredRecipes = new List<RecipeDefinition>();
+    private List<CategoryDefinition> categories = new List<CategoryDefinition>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var uri = Navigation.ToAbsoluteUri(Navigation.Uri);
+        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("s", out var categoryParam))
+        {
+            category = categoryParam;
+        }
+        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("t", out var titleParam))
+        {
+            title = titleParam;
+        }
+
+        categories = await DbContext.Category.ToListAsync();
+        recipes = await DbContext.Recipe
+            .Include(r => r.Category)
+            .ToListAsync();
+        FilterRecipes();
+    }
+
+    private void SearchRecipes(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            FilterRecipes();
+            Navigation.NavigateTo($"/recipes/search?s={category}&t={title}", true);
+        }
+    }
+
+    private void SelectCategory(string? selectedCategory)
+    {
+        category = selectedCategory;
+        FilterRecipes();
+        Navigation.NavigateTo($"/recipes/search?s={category}&t={title}", true);
+    }
+
+    private void FilterRecipes()
+    {
+        filteredRecipes = recipes
+            .Where(r => (string.IsNullOrEmpty(category) || (r.Category != null && r.Category.Name != null && r.Category.Name.Contains(category, StringComparison.OrdinalIgnoreCase))) &&
+                        (string.IsNullOrEmpty(title) || (r.Title != null && r.Title.Contains(title, StringComparison.OrdinalIgnoreCase))))
+            .ToList();
+    }
+}
