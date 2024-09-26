@@ -1,0 +1,30 @@
+﻿@using MudBlazor
+
+<MudPaper Class="pa-5" Elevation="0" Style="@(string.Format("background-color: {0};", footerBackgroundColor))">
+    <MudGrid>
+        <MudItem xs="12" md="4">
+            <MudText Typo="Typo.h6">Hunt, Hook, & Cook</MudText>
+            <MudText Typo="Typo.body2">© @(DateTime.Now.Year) All rights reserved.</MudText>
+        </MudItem>
+        <MudItem xs="12" md="4">
+            <MudText Typo="Typo.h6">Follow Us</MudText>
+            <MudLink Href="https://youtube.com" Target="_blank" Class="icon-link">
+                <MudIcon Icon="fab fa-youtube" Color="Color.Primary" Size="Size.Large" />
+            </MudLink>
+            <MudLink Href="https://open.spotify.com/show/2GvBnBxH5PsgjgVVwJvCD2?flow_ctx=02229b80-e9f8-43ba-84af-ca28aed631eb%3A1724629846" Target="_blank" Class="icon-link">
+                <MudIcon Icon="fab fa-spotify" Color="Color.Primary" Size="Size.Large" />
+            </MudLink>
+            <MudLink Href="https://www.instagram.com/hunthookandcook/" Target="_blank" Class="icon-link">
+                <MudIcon Icon="fab fa-instagram" Color="Color.Primary" Size="Size.Large" />
+            </MudLink>
+        </MudItem>
+        <MudItem xs="12" md="4">
+        </MudItem>
+    </MudGrid>
+</MudPaper>
+
+@code {
+    private string footerBackgroundColor => _isDarkMode ? Colors.Gray.Darken4 : Colors.Amber.Lighten3;
+
+    [CascadingParameter] private bool _isDarkMode { get; set; }
+}

@@ -12,7 +12,7 @@
 @code {
     [Parameter] public RecipeDefinition Recipe { get; set; } = new RecipeDefinition();
 
-    private string imageSrc => Recipe.Image != null ? $"data:image/png;base64,{Convert.ToBase64String(Recipe.Image)}" : "Images/image-not-found.jpg";
+    private string imageSrc => Recipe.Image != null ? $"data:image/png;base64,{Convert.ToBase64String(Recipe.Image)}" : "Images/image-not-found.jpeg";
 
     private void ShowDetails()
     {

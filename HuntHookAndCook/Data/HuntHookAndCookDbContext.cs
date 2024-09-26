@@ -1,5 +1,4 @@
-﻿using HuntHookAndCook.Components.Pages.Recipe;
-using HuntHookAndCook.Models;
+﻿using HuntHookAndCook.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace HuntHookAndCook.Data
