@@ -19,11 +19,12 @@
     </MudDrawer>
     <MudMainContent Class="mt-16 pa-4">
         @Body
+
+        <CascadingValue Value="_isDarkMode">
+            <Footer />
+        </CascadingValue>
     </MudMainContent>
 
-    <CascadingValue Value="_isDarkMode">
-        <Footer />
-    </CascadingValue>
 
 </MudLayout>
 
