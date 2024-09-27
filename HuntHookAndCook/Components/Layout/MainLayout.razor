@@ -6,20 +6,19 @@
 <MudSnackbarProvider />
 
 <MudLayout>
-    <MudAppBar Elevation="1">
-        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
-        <MudImage Src="Image/Logo.jpeg"/>
+    <MudAppBar Elevation="1" Color="Color.Inherit">
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+        <MudImage Src="Images/Logo.jpeg" Width="50" Class="rounded-lg" />
         <MudText Typo="Typo.h5" Class="ml-3">Hunt, Hook, & Cook</MudText>
         <MudSpacer />
-        <MudIconButton Icon="@Icons.Material.Filled.MoreVert" Color="Color.Inherit" Edge="Edge.End" />
+        <MudIconButton Icon="@Icons.Material.Filled.Person" Edge="Edge.End" />
     </MudAppBar>
     <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2">
         <NavMenu />
-        <MudSwitch @bind-Value="_isDarkMode" Color="Color.Primary" Class="ma-4" T="bool" Label="Dark Mode" />
+        <MudSwitch @bind-Value="_isDarkMode" Class="ma-4" T="bool" Label="Dark Mode" />
     </MudDrawer>
     <MudMainContent Class="mt-16 pa-4">
         @Body
-
         <CascadingValue Value="_isDarkMode">
             <Footer />
         </CascadingValue>
@@ -43,15 +42,19 @@
         {
             PaletteLight = new PaletteLight()
             {
-                Primary = Colors.LightGreen.Darken2,
+                Primary = Colors.Green.Darken2,
+                //Primary = Colors.LightGreen.Darken2,
                 Secondary = Colors.Cyan.Darken2,
-                AppbarBackground = Colors.LightGreen.Darken4, 
+                
+                AppbarBackground = Colors.Green.Darken2, 
+                AppbarText = Colors.Gray.Lighten3
             },
             PaletteDark = new PaletteDark()
             {
                 Primary = Colors.LightGreen.Darken2,
                 Secondary = Colors.Cyan.Darken2,
-                AppbarBackground = Colors.LightGreen.Darken4
+                AppbarBackground = Colors.Red.Darken1,
+                AppbarText = Colors.Gray.Lighten3
             },
 
             LayoutProperties = new LayoutProperties()

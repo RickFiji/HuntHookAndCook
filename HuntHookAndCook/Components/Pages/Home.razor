@@ -2,91 +2,92 @@
 
 <PageTitle>Home</PageTitle>
 
-<MudText Typo="Typo.h3" GutterBottom="true">Hunt Hook and Cook</MudText>
-<MudText Class="mb-8">Who are you: ____</MudText>
-<MudText Class="mb-8">What do you do: ____</MudText>
-<MudText Class="mb-8">How can you help me: ____</MudText>
-
-<br />
-
-<MudText Typo="Typo.h5" GutterBottom="true">Services</MudText>
-<MudContainer Class="mt-8 px-4" MaxWidth="MaxWidth.False">
+<MudContainer Class="mb-5">
     <MudGrid>
-        <MudItem xs="12" sm="6" md="4">
-            <MudPaper Elevation="2" Class="pa-4" Style="height: 100%;"></MudPaper>
+        <MudItem xs="12" sm="6" md="7">
+            <MudImage Src="Images/Logo.jpeg" Width="450" Fluid="true" />
+            <MudText Typo="Typo.h3">Hunting. Cooking. Community.</MudText>
+            <MudText Typo="Typo.h5">One stop shop for recipes, podcasts, blogs, and videos.</MudText>
         </MudItem>
-        <MudItem xs="12" sm="6" md="4">
-            <MudPaper Elevation="2" Class="pa-4" Style="height: 100%;"></MudPaper>
-        </MudItem>
-        <MudItem xs="12" sm="12" md="4">
-            <MudPaper Elevation="2" Class="pa-4" Style="height: 100%"></MudPaper>
+        <MudItem xs="12" sm="6" md="5">
+            <MudImage Src="Images/Llamas.jpeg" Width="450" Fluid="true" />
         </MudItem>
     </MudGrid>
 </MudContainer>
 
-<br />
-
-<MudText Typo="Typo.h5" GutterBottom="true">About</MudText>
-<MudContainer Class="mt-8 px-4" MaxWidth="MaxWidth.False">
-    <MudGrid>
-        <MudItem xs="4">
-            <MudImage Src="Images/Trophy-Deer-01.jpeg" Alt="Me and my food" Elevation="25" Class="rounded-lg" ObjectFit="ObjectFit.Fill" Fluid="true" />
-        </MudItem>
-        <MudItem xs="8">
-            <MudText Typo="Typo.body2">
-                Bio <br />
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore <br/>
-                et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut <br/>
-                aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum <br/>
-                dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui  <br/>
-                officia deserunt mollit anim id est laborum.
-            </MudText>
-        </MudItem>
-        <MudItem xs="8">
-            <MudList T="string">
-                <MudListSubheader>
-                    Other things about me
-                </MudListSubheader>
-                <MudListItem>I am awesome</MudListItem>
-                <MudListItem>what i'm into (hunting/safaris/cooking/talking)</MudListItem>
-                <MudListItem>case studies</MudListItem>
-                <MudListItem>my resume</MudListItem>
-                <MudListItem></MudListItem>
-            </MudList>
-        </MudItem>
-        <MudItem xs="4">
-            <MudImage Src="Images/Boar1.jpg" Alt="Gunner the dog" Elevation="25" Class="rounded-lg" ObjectFit="ObjectFit.Fill" Fluid="true" />
-        </MudItem>
-    </MudGrid>
+<MudContainer Class="mb-8">
+    <MudText Typo="Typo.h5" GutterBottom="true">Services</MudText>
+    <MudContainer Class="mt-8 px-4" MaxWidth="MaxWidth.False">
+        <MudGrid>
+            <MudItem xs="12" sm="6" md="3">
+                <MudPaper Elevation="2" Class="pa-4" Style="height: 100%">
+                    <MudText Typo="Typo.h5" >Recipes</MudText>
+                    <MudIconButton Icon="@Icons.Material.Filled.Fastfood" Size="Size.Large" />
+                </MudPaper>
+            </MudItem>
+            <MudItem xs="12" sm="6" md="3">
+                <MudPaper Elevation="2" Class="pa-4" Style="height: 100%">
+                    <MudText Typo="Typo.h5">Podcast</MudText>
+                    <MudIconButton Icon="@Icons.Material.Filled.Mic" Size="Size.Large" />
+                    
+                </MudPaper>
+            </MudItem>
+            <MudItem xs="12" sm="6" md="3">
+                <MudPaper Elevation="2" Class="pa-4" Style="height: 100%">
+                    <MudText Typo="Typo.h5">Blog</MudText>
+                    <MudIconButton Icon="@Icons.Material.Filled.Newspaper" Size="Size.Large" />
+                    
+                </MudPaper>
+            </MudItem>
+            <MudItem xs="12" sm="6" md="3">
+                <MudPaper Elevation="2" Class="pa-4" Style="height: 100%">
+                    <MudText Typo="Typo.h5">Shop</MudText>
+                    <MudIconButton Icon="@Icons.Material.Filled.ShoppingBag" Size="Size.Large" />
+                    
+                </MudPaper>
+            </MudItem>
+        </MudGrid>
+    </MudContainer>
 </MudContainer>
 
-<br />
+<MudContainer Class="mb-5">
+    <MudText Typo="Typo.h5" GutterBottom="true">My Mission</MudText>
+    <MudContainer Class="mt-4 px-4" MaxWidth="MaxWidth.False">
+        <MudGrid>
+            <MudItem xs="4">
+                <MudText Class="mb-8" Typo="Typo.body1">To help others hunt, cook, and fellowship.</MudText>
+                <MudText Class="mb-8" Typo="Typo.body1">To turn deer into soup.</MudText>
+                <MudText Class="mb-8">Who are you: ____</MudText>
+                <MudText Class="mb-8">What do you do: ____</MudText>
+                <MudText Class="mb-8">How can you help me: ____</MudText>
+            </MudItem>
+            <MudItem xs="4">
+                <MudImage Src="Images/Deer1.jpg" Alt="Deer" Width="500" Elevation="25" Class="rounded-lg" ObjectFit="ObjectFit.Fill" Fluid="true" />
+            </MudItem>
+            <MudItem xs="4">
+                <MudImage Src="Images/VenisonSoup.jpg" Alt="Venison Soup" Width="255" Elevation="25" Class="rounded-lg" ObjectFit="ObjectFit.Fill" Fluid="true" />
+            </MudItem>
+        </MudGrid>
+    </MudContainer>
+</MudContainer>
 
-<MudText Typo="Typo.h5" GutterBottom="true">My Mission</MudText>
-<MudContainer Class="mt-4 px-4" MaxWidth="MaxWidth.False">
-    <MudGrid>
-        <MudItem xs="12">
-            <MudText Typo="Typo.body1">To help others hunt, cook, and fellowship.</MudText>
-        </MudItem>
-        <MudItem xs="4">
-            <MudImage Src="Images/VenisonSoup.jpg" Alt="Awesome video" Elevation="25" Class="rounded-lg" ObjectFit="ObjectFit.Fill" Fluid="true" />
-        </MudItem>
-        <MudItem xs="8">
-            <MudText Typo="Typo.body2">
-                Bio: This will say <br />
-                <MudList T="string">
-                    <MudListItem>how awesome i am</MudListItem>
-                     <MudListItem>what i'm into (hunting/safaris/cooking/talking)</MudListItem>
-                     <MudListItem>case studies</MudListItem>
-                     <MudListItem></MudListItem>
-                     <MudListItem></MudListItem>
-                 </MudList>how awesome i am, what i'm into, cool safaris i went on,'
-            </MudText>
-        </MudItem>
-        <MudItem xs="12">
-            <MudText Typo="Typo.body2">
-                <MudImage Src="Images/Deer1.jpg" Alt="Awesome video" Elevation="25" Class="rounded-lg" ObjectFit="ObjectFit.Fill" Fluid="true" />
-            </MudText>
-        </MudItem>
-    </MudGrid>
+<MudContainer Class="mb-5">
+    <MudText Typo="Typo.h5" GutterBottom="true">About</MudText>
+    <MudContainer Class="mt-8 px-4" MaxWidth="MaxWidth.False">
+        <MudGrid>
+            <MudItem xs="4">
+                <MudImage Src="Images/Trophy-Deer-01.jpeg" Alt="Me and my food" Elevation="25" Class="rounded-lg" ObjectFit="ObjectFit.Fill" Fluid="true" />
+            </MudItem>
+            <MudItem xs="8">
+                <MudText Typo="Typo.body2">
+                    Bio <br />
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore <br/>
+                    et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut <br/>
+                    aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum <br/>
+                    dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui  <br/>
+                    officia deserunt mollit anim id est laborum.
+                </MudText>
+            </MudItem>
+        </MudGrid>
+    </MudContainer>
 </MudContainer>
