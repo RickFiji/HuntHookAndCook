@@ -2,7 +2,7 @@
 
 <PageTitle>Home</PageTitle>
 
-<MudContainer Class="mb-5">
+<MudContainer Class="pa-5">
     <MudGrid>
         <MudItem xs="12" sm="6" md="7">
             <MudImage Src="Images/Logo.jpeg" Width="450" Fluid="true" />
@@ -15,47 +15,55 @@
     </MudGrid>
 </MudContainer>
 
-<MudContainer Class="mb-8">
+<MudContainer Class="pa-8" Style="@(string.Format("background-color: {0}", Colors.Gray.Lighten3))">
     <MudText Typo="Typo.h5" GutterBottom="true">Services</MudText>
     <MudContainer Class="mt-8 px-4" MaxWidth="MaxWidth.False">
         <MudGrid>
             <MudItem xs="12" sm="6" md="3">
                 <MudPaper Elevation="2" Class="pa-4" Style="height: 100%">
-                    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%;">
-                        <MudText Typo="Typo.h5" Class="mb-5">Recipes</MudText>
-                        <MudIcon Icon="@Icons.Material.Filled.Fastfood" Class="mb-2" Size="Size.Large" />
-                    </div>
+                    <MudLink Href="@("/recipes/search")">
+                        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%;">
+                            <MudText Typo="Typo.h5" Class="mb-5">Recipes</MudText>
+                            <MudIcon Icon="@Icons.Material.Filled.Fastfood" Class="mb-2" Size="Size.Large" />
+                        </div>
+                    </MudLink>
                 </MudPaper>
             </MudItem>
             <MudItem xs="12" sm="6" md="3">
                 <MudPaper Elevation="2" Class="pa-4" Style="height: 100%">
-                    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%;">
+                    <MudLink Href="@($"/podcast")">
+                        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%;">
                         <MudText Typo="Typo.h5" Class="mb-5">Podcast</MudText>
                         <MudIcon Icon="@Icons.Material.Filled.Mic" Class="mb-2" Size="Size.Large" />
                     </div>
+                    </MudLink>
                 </MudPaper>
             </MudItem>
             <MudItem xs="12" sm="6" md="3">
                 <MudPaper Elevation="2" Class="pa-4" Style="height: 100%">
-                    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%;">
+                    <MudLink Href="@($"/blog")">
+                        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%;">
                         <MudText Typo="Typo.h5" Class="mb-5">Blog</MudText>
                         <MudIcon Icon="@Icons.Material.Filled.Newspaper" Class="mb-2" Size="Size.Large" />
                     </div>
+                    </MudLink>
                 </MudPaper>
             </MudItem>
             <MudItem xs="12" sm="6" md="3">
                 <MudPaper Elevation="2" Class="pa-4" Style="height: 100%">
-                    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%;">
+                    <MudLink Href="https://www.hunthookandcook.shop" Target="_blank">
+                        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%;">
                         <MudText Typo="Typo.h5" Class="mb-5">Shop</MudText>
                         <MudIcon Icon="@Icons.Material.Filled.ShoppingBag" Class="mb-2" Size="Size.Large" />
                     </div>
+                    </MudLink>
                 </MudPaper>
             </MudItem>
         </MudGrid>
     </MudContainer>
 </MudContainer>
 
-<MudContainer Class="mb-5">
+<MudContainer Class="pa-5">
     <MudText Typo="Typo.h5" GutterBottom="true">My Mission</MudText>
     <MudContainer Class="mt-4 px-4" MaxWidth="MaxWidth.False">
         <MudGrid>
@@ -76,7 +84,7 @@
     </MudContainer>
 </MudContainer>
 
-<MudContainer Class="mb-5">
+<MudContainer Class="pa-5">
     <MudText Typo="Typo.h5" GutterBottom="true">About</MudText>
     <MudContainer Class="mt-8 px-4" MaxWidth="MaxWidth.False">
         <MudGrid>
