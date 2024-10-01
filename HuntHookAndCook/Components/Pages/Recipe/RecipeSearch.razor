@@ -11,11 +11,13 @@
     <MudButtonGroup Exclusive="true" Class="mb-4">
         @foreach (var cat in categories)
         {
-            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="() => SelectCategory(cat.Name)" Class="mr-2">
-                @cat.Name
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="() => SelectCategory(cat)" Class="mr-2">
+                @cat
             </MudButton>
         }
     </MudButtonGroup>
+    <MudButton Variant="Variant.Filled" Color="Color.Secondary" Size="Size.Large" OnClick="ResetSearch">Reset</MudButton>
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" EndIcon="@Icons.Material.Filled.Settings" Href="/recipes/manage">Manage</MudButton>
     <MudGrid>
         @foreach (var recipe in filteredRecipes)
         {
@@ -31,7 +33,7 @@
     private string? title;
     private List<RecipeDefinition> recipes = new List<RecipeDefinition>();
     private List<RecipeDefinition> filteredRecipes = new List<RecipeDefinition>();
-    private List<CategoryDefinition> categories = new List<CategoryDefinition>();
+    private List<string> categories = new List<string>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -45,7 +47,7 @@
             title = titleParam;
         }
 
-        categories = await DbContext.Category.ToListAsync();
+        categories = await DbContext.Category.Select(x => x.Name).Distinct().ToListAsync();
         recipes = await DbContext.Recipe
             .Include(r => r.Category)
             .ToListAsync();
@@ -67,7 +69,13 @@
         FilterRecipes();
         Navigation.NavigateTo($"/recipes/search?s={category}&t={title}", true);
     }
-
+    private void ResetSearch()
+    {
+        category = null;
+        title = null;
+        FilterRecipes();
+        Navigation.NavigateTo("/recipes/search", true);
+    }
     private void FilterRecipes()
     {
         filteredRecipes = recipes

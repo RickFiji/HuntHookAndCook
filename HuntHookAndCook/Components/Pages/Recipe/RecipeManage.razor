@@ -8,7 +8,7 @@
 
 <MudContainer>
     <MudButton Variant="Variant.Outlined" Color="Color.Primary" OnClick="GoBack" Class="mb-5">
-        <MudIcon Icon="@Icons.Material.Filled.ArrowBack" /> Back to Recipe Categories
+        <MudIcon Icon="@Icons.Material.Filled.ArrowBack" /> Back to Recipe Search
     </MudButton>
     <MudText Typo="Typo.h4">Manage Recipes</MudText>
     <MudTable Items="Recipes" Hover="true" Class="mt-4 mb-5">
@@ -67,6 +67,6 @@
 
     private void GoBack()
     {
-        Navigation.NavigateTo("/recipes");
+        Navigation.NavigateTo("/recipes/search");
     }
 }

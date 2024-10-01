@@ -1,0 +1,186 @@
+﻿@page "/recipe/manage/details/{Id:int?}"
+@using HuntHookAndCook.Models
+@using HuntHookAndCook.Data
+@using Microsoft.EntityFrameworkCore
+@inject HuntHookAndCookDbContext DbContext
+@inject NavigationManager Navigation
+@inject ISnackbar Snackbar
+
+
+<MudButton Variant="Variant.Outlined" Color="Color.Primary" OnClick="GoBack" Class="mb-5">
+    <MudIcon Icon="@Icons.Material.Filled.ArrowBack" /> Back to Manage Recipes
+</MudButton>
+
+<MudCard Class="pa-3" Style="@(string.Format("background-color: {0}", Colors.Gray.Lighten3))">
+    <MudText Typo="Typo.h4">Recipe Details</MudText>
+    <MudForm Model="@recipe" @ref="@form" OnValidSubmit="HandleValidSubmit">
+        <MudCardContent Class="mb-2">
+            <MudTextField @bind-Value="recipe.Title" 
+                          For="@(() => recipe.Title)"
+                          Label="Title" 
+                          Required="true" 
+                          Class="mb-2" />
+            <MudTextField @bind-Value="recipe.Category.Name"
+                          For="@(() => recipe.Category.Name)"
+                          Label="Category" 
+                          Required="true"
+                          Class="mb-2" />
+            <MudTextField @bind-Value="recipe.ShortDescription"
+                          For="@(() => recipe.ShortDescription)"
+                          Label="Short Description"
+                          Lines="2"
+                          Required="true"
+                          Class="mb-2" />
+            <MudTextField @bind-Value="recipe.LongDescription"
+                          For="@(() => recipe.LongDescription)"
+                          Label="Long Description"
+                          Lines="5"
+                          Required="true"/>
+        </MudCardContent>
+
+        <MudCardContent Class="mb-2">
+            <MudText Typo="Typo.h6">Image</MudText>
+            @* <MudImage Src="@imageBase64" Alt="Recipe Image" Width="200"  /> *@
+            <MudFileUpload T="IBrowserFile">
+                <ActivatorContent>
+                    <MudFab Variant="Variant.Filled"
+                            Color="Color.Secondary"
+                            StartIcon="@Icons.Material.Filled.Image"
+                            Label="Load Picture">
+                    </MudFab>
+                </ActivatorContent>
+                <SelectedTemplate>
+                    @if (context != null)
+                    {
+                        <MudText>@context.Name</MudText>
+                    }
+                    else
+                    {
+                        <MudText>No File</MudText>
+                    }
+                </SelectedTemplate>
+            </MudFileUpload>
+        </MudCardContent>
+
+        <MudCardContent>
+            <MudGrid Spacing="20" Class="pt-2 pb-2">
+                <MudItem xs="12" md="6" Class="border-grid">
+                    <MudText Typo="Typo.h6" Class="mt-4">Ingredients</MudText>
+                    @if (recipe.Ingredients != null)
+                    {
+                        @foreach (var ingredient in recipe.Ingredients)
+                        {
+                            <MudTextField @bind-Value="ingredient.Name" 
+                                          For="@(() => ingredient.Name)"
+                                          Label="Name" 
+                                          Required="true" />
+                            <MudTextField @bind-Value="ingredient.Quantity"
+                                          For="@(() => ingredient.Quantity)"
+                                          Label="Quantity" />
+                            <MudTextField @bind-Value="ingredient.Unit"
+                                          For="@(() => ingredient.Unit)"
+                                          Label="Unit" />
+                            <MudButton Variant="Variant.Outlined" Color="Color.Error" OnClick="@(() => RemoveIngredient(ingredient))" Class="mb-4">Remove</MudButton>
+                        }
+                    }
+                    <MudButton Variant="Variant.Outlined" Color="Color.Primary" OnClick="AddIngredient" Class="mb-4">Add Ingredient</MudButton>
+                </MudItem>
+
+                <MudItem xs="12" md="6" Class="border-grid">
+                    <MudText Typo="Typo.h6" Class="mt-4">Steps</MudText>
+                    @if (recipe.Steps != null)
+                    {
+                        @foreach (var step in recipe.Steps)
+                        {
+                            <MudTextField @bind-Value="step.Order" Label="Order" Required="true" Class="mb-4" />
+                            <MudTextField @bind-Value="step.Description" Label="Description" Required="true" Class="mb-4" />
+                            <MudButton Variant="Variant.Outlined" Color="Color.Error" OnClick="@(() => RemoveStep(step))" Class="mb-4">Remove</MudButton>
+                        }
+                    }
+                    <MudButton Variant="Variant.Outlined" Color="Color.Primary" OnClick="AddStep" Class="mb-4">Add Step</MudButton>
+                </MudItem>
+            </MudGrid>
+        </MudCardContent>
+
+        <MudCardActions>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(async () => await HandleValidSubmit())">Save</MudButton>
+        </MudCardActions>
+    </MudForm>
+</MudCard>
+@code {
+    [Parameter] public int? Id { get; set; }
+    private RecipeDefinition recipe = new RecipeDefinition()
+    {
+        Category = new CategoryDefinition(),
+        Ingredients = new List<IngredientDefinition>(),
+        Steps = new List<StepDefinition>()
+    };
+    private MudForm? form;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (Id.HasValue)
+        {
+            recipe = await DbContext.Recipe
+                .Include(r => r.Category)
+                .Include(r => r.Ingredients)
+                .Include(r => r.Steps)
+                .FirstOrDefaultAsync(r => r.Id == Id.Value) ?? new RecipeDefinition
+                {
+                    Ingredients = new List<IngredientDefinition>(),
+                    Steps = new List<StepDefinition>()
+                };
+
+        }
+    }
+
+    private async Task HandleValidSubmit()
+    {
+
+        if (recipe.Category == null)
+        {
+            recipe.Category = new CategoryDefinition();
+        }
+
+        if (recipe.Id == 0)
+        {
+            DbContext.Recipe.Add(recipe);
+        }
+        else
+        {
+            DbContext.Recipe.Update(recipe);
+        }
+
+        await DbContext.SaveChangesAsync();
+        Snackbar.Add("Recipe saved successfully!", Severity.Success);
+        Navigation.NavigateTo("/recipes/manage");
+    }
+
+
+    private void AddIngredient()
+    {
+        recipe.Ingredients ??= new List<IngredientDefinition>();
+        recipe.Ingredients.Add(new IngredientDefinition());
+    }
+
+    private void RemoveIngredient(IngredientDefinition ingredient)
+    {
+        recipe.Ingredients?.Remove(ingredient);
+    }
+
+    private void AddStep()
+    {
+        recipe.Steps ??= new List<StepDefinition>();
+        recipe.Steps.Add(new StepDefinition());
+    }
+
+    private void RemoveStep(StepDefinition step)
+    {
+        recipe.Steps?.Remove(step);
+    }
+
+    private void GoBack()
+    {
+        Navigation.NavigateTo("/recipes/manage");
+    }
+}
