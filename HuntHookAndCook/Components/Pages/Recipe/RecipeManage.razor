@@ -46,12 +46,12 @@
 
     private void AddRecipe()
     {
-        Navigation.NavigateTo("recipe/manage/details/");
+        Navigation.NavigateTo("recipes/manage/card/");
     }
 
     private void EditRecipe(RecipeDefinition recipe)
     {
-        Navigation.NavigateTo($"recipe/manage/details/{recipe.Id}");
+        Navigation.NavigateTo($"recipes/manage/card/{recipe.Id}");
     }
 
     private async Task DeleteRecipe(RecipeDefinition recipe)

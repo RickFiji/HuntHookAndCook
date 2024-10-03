@@ -1,4 +1,4 @@
-﻿@page "/recipe/manage/details/{Id:int?}"
+﻿@page "/recipes/manage/card/{Id:int?}"
 @using HuntHookAndCook.Models
 @using HuntHookAndCook.Data
 @using Microsoft.EntityFrameworkCore
@@ -6,23 +6,22 @@
 @inject NavigationManager Navigation
 @inject ISnackbar Snackbar
 
-
 <MudButton Variant="Variant.Outlined" Color="Color.Primary" OnClick="GoBack" Class="mb-5">
     <MudIcon Icon="@Icons.Material.Filled.ArrowBack" /> Back to Manage Recipes
 </MudButton>
 
-<MudCard Class="pa-3" Style="@(string.Format("background-color: {0}", Colors.Gray.Lighten3))">
+<MudCard Class="pa-3">
     <MudText Typo="Typo.h4">Recipe Details</MudText>
     <MudForm Model="@recipe" @ref="@form" OnValidSubmit="HandleValidSubmit">
         <MudCardContent Class="mb-2">
-            <MudTextField @bind-Value="recipe.Title" 
+            <MudTextField @bind-Value="recipe.Title"
                           For="@(() => recipe.Title)"
-                          Label="Title" 
-                          Required="true" 
+                          Label="Title"
+                          Required="true"
                           Class="mb-2" />
             <MudTextField @bind-Value="recipe.Category.Name"
                           For="@(() => recipe.Category.Name)"
-                          Label="Category" 
+                          Label="Category"
                           Required="true"
                           Class="mb-2" />
             <MudTextField @bind-Value="recipe.ShortDescription"
@@ -35,31 +34,36 @@
                           For="@(() => recipe.LongDescription)"
                           Label="Long Description"
                           Lines="5"
-                          Required="true"/>
+                          Required="true" />
         </MudCardContent>
 
         <MudCardContent Class="mb-2">
             <MudText Typo="Typo.h6">Image</MudText>
-            @* <MudImage Src="@imageBase64" Alt="Recipe Image" Width="200"  /> *@
-            <MudFileUpload T="IBrowserFile">
+            @if (recipe.Image != null)
+            {
+                <MudImage Src="@imageSrc" Alt="Recipe Image" Width="200" />
+            }
+
+            <MudFileUpload T="IBrowserFile" FilesChanged="UploadFiles">
                 <ActivatorContent>
-                    <MudFab Variant="Variant.Filled"
-                            Color="Color.Secondary"
+                    <MudFab Color="Color.Secondary"
                             StartIcon="@Icons.Material.Filled.Image"
-                            Label="Load Picture">
-                    </MudFab>
+                            Label="Load picture" />
                 </ActivatorContent>
-                <SelectedTemplate>
-                    @if (context != null)
-                    {
-                        <MudText>@context.Name</MudText>
-                    }
-                    else
-                    {
-                        <MudText>No File</MudText>
-                    }
-                </SelectedTemplate>
             </MudFileUpload>
+
+            @if (_files != null)
+            {
+                <MudText Typo="@Typo.h6">@_files.Count() File@(_files.Count() == 1 ? "" : "s"):</MudText>
+                <MudList T="string">
+                    @foreach (var file in _files)
+                    {
+                        <MudListItem Icon="@Icons.Material.Filled.AttachFile" @key="@file">
+                            @file.Name <code>@file.Size bytes</code>
+                        </MudListItem>
+                    }
+                </MudList>
+            }
         </MudCardContent>
 
         <MudCardContent>
@@ -70,9 +74,9 @@
                     {
                         @foreach (var ingredient in recipe.Ingredients)
                         {
-                            <MudTextField @bind-Value="ingredient.Name" 
+                            <MudTextField @bind-Value="ingredient.Name"
                                           For="@(() => ingredient.Name)"
-                                          Label="Name" 
+                                          Label="Name"
                                           Required="true" />
                             <MudTextField @bind-Value="ingredient.Quantity"
                                           For="@(() => ingredient.Quantity)"
@@ -107,15 +111,19 @@
         </MudCardActions>
     </MudForm>
 </MudCard>
+
 @code {
     [Parameter] public int? Id { get; set; }
-    private RecipeDefinition recipe = new RecipeDefinition()
-    {
-        Category = new CategoryDefinition(),
-        Ingredients = new List<IngredientDefinition>(),
-        Steps = new List<StepDefinition>()
-    };
+
+    private IList<IBrowserFile> _files = new List<IBrowserFile>();
     private MudForm? form;
+    private string? imageSrc;
+    private RecipeDefinition recipe = new RecipeDefinition()
+        {
+            Category = new CategoryDefinition(),
+            Ingredients = new List<IngredientDefinition>(),
+            Steps = new List<StepDefinition>()
+        };
 
     protected override async Task OnInitializedAsync()
     {
@@ -126,17 +134,20 @@
                 .Include(r => r.Ingredients)
                 .Include(r => r.Steps)
                 .FirstOrDefaultAsync(r => r.Id == Id.Value) ?? new RecipeDefinition
-                {
-                    Ingredients = new List<IngredientDefinition>(),
-                    Steps = new List<StepDefinition>()
-                };
+                    {
+                        Ingredients = new List<IngredientDefinition>(),
+                        Steps = new List<StepDefinition>()
+                    };
 
+        }
+        if (recipe.Image != null)
+        {
+            imageSrc = $"data:image/png;base64,{Convert.ToBase64String(recipe.Image)}";
         }
     }
 
     private async Task HandleValidSubmit()
     {
-
         if (recipe.Category == null)
         {
             recipe.Category = new CategoryDefinition();
@@ -156,6 +167,16 @@
         Navigation.NavigateTo("/recipes/manage");
     }
 
+    private async Task UploadFiles(IBrowserFile file)
+    {
+        _files.Add(file);
+        if (file != null)
+        {
+            using var stream = new MemoryStream();
+            await file.OpenReadStream().CopyToAsync(stream);
+            recipe.Image = stream.ToArray();
+        }
+    }
 
     private void AddIngredient()
     {
