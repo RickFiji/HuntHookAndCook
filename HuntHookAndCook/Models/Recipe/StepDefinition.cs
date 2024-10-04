@@ -1,4 +1,4 @@
-﻿namespace HuntHookAndCook.Models
+﻿namespace HuntHookAndCook.Models.Recipe
 {
     public class StepDefinition
     {

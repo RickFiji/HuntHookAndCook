@@ -1,4 +1,4 @@
-﻿namespace HuntHookAndCook.Models
+﻿namespace HuntHookAndCook.Models.Recipe
 {
     public class RecipeDefinition
     {
@@ -8,7 +8,7 @@
         public string? ShortDescription { get; set; }
         public string? LongDescription { get; set; }
         public byte[]? Image { get; set; }
-        public List<IngredientDefinition>? Ingredients { get; set; } 
-        public List<StepDefinition>? Steps { get; set; } 
+        public List<IngredientDefinition>? Ingredients { get; set; }
+        public List<StepDefinition>? Steps { get; set; }
     }
 }
