@@ -126,6 +126,8 @@
 
     protected override async Task OnInitializedAsync()
     {
+        Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
+
         if (Id.HasValue)
         {
             _recipe = await DbContext.Recipe
@@ -171,8 +173,16 @@
         _file = file;
         if (file != null)
         {
+            // Check file size (example: limit to 5MB)
+            const long maxFileSize = 5 * 1024 * 1024;
+            if (file.Size > maxFileSize)
+            {
+                Snackbar.Add("File size exceeds the 5MB limit.", Severity.Error);
+                return;
+            }
+
             using var stream = new MemoryStream();
-            await file.OpenReadStream().CopyToAsync(stream);
+            await file.OpenReadStream(maxFileSize).CopyToAsync(stream);
             _recipe.Image = stream.ToArray();
             _imageSrc = $"data:image/png;base64,{Convert.ToBase64String(_recipe.Image)}"; 
         }
