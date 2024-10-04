@@ -1,0 +1,22 @@
+﻿@using HuntHookAndCook.Models.Blog
+@using MudBlazor
+@inject NavigationManager Navigation
+
+<MudCard Class="blog-card-thumbnail" @onclick="ShowDetails" Style="cursor: pointer;">
+    <MudCardMedia Image="@imageSrc" Alt="@Blog.Title" Height="200" />
+    <MudCardContent>
+        <MudText Typo="Typo.h6">@Blog.Title</MudText>
+        <MudText Typo="Typo.subtitle1">@Blog.ShortDescription</MudText>
+    </MudCardContent>
+</MudCard>
+
+@code {
+    [Parameter] public BlogDefinition Blog { get; set; } = new BlogDefinition();
+
+    private string imageSrc => Blog.BannerImage != null ? $"data:image/png;base64,{Convert.ToBase64String(Blog.BannerImage)}" : "Images/image-not-found.jpeg";
+
+    private void ShowDetails()
+    {
+        Navigation.NavigateTo($"/blog/{Blog.Title}");
+    }
+}

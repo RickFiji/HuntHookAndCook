@@ -1,4 +1,4 @@
-﻿@page "/recipes/manage"
+﻿@page "/recipe/manage"
 @using HuntHookAndCook.Models.Recipe
 @using HuntHookAndCook.Data
 @using Microsoft.EntityFrameworkCore
@@ -46,12 +46,12 @@
 
     private void AddRecipe()
     {
-        Navigation.NavigateTo("recipes/manage/card/");
+        Navigation.NavigateTo("recipe/manage/card/");
     }
 
     private void EditRecipe(RecipeDefinition recipe)
     {
-        Navigation.NavigateTo($"recipes/manage/card/{recipe.Id}");
+        Navigation.NavigateTo($"recipe/manage/card/{recipe.Id}");
     }
 
     private async Task DeleteRecipe(RecipeDefinition recipe)
@@ -67,6 +67,6 @@
 
     private void GoBack()
     {
-        Navigation.NavigateTo("/recipes/search");
+        Navigation.NavigateTo("/recipe/search");
     }
 }

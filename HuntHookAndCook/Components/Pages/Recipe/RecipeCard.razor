@@ -1,4 +1,4 @@
-﻿@page "/recipes/{Title}"
+﻿@page "/recipe/{Title}"
 @using HuntHookAndCook.Data
 @using HuntHookAndCook.Models.Recipe
 @using Microsoft.EntityFrameworkCore
@@ -59,7 +59,7 @@
     {
         if (string.IsNullOrEmpty(Title))
         {
-            Navigation.NavigateTo("/recipes");
+            Navigation.NavigateTo("/recipe");
             return;
         }
 
@@ -71,7 +71,7 @@
 
         if (recipe == null)
         {
-            Navigation.NavigateTo("/recipes");
+            Navigation.NavigateTo("/recipe");
             return;
         }
 

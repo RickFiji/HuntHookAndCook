@@ -1,4 +1,4 @@
-﻿@page "/recipes/manage/card/{Id:int?}"
+﻿@page "/recipe/manage/card/{Id:int?}"
 @using HuntHookAndCook.Models.Recipe
 @using HuntHookAndCook.Data
 @using Microsoft.EntityFrameworkCore
@@ -165,7 +165,7 @@
 
         await DbContext.SaveChangesAsync();
         Snackbar.Add("Recipe saved successfully!", Severity.Success);
-        Navigation.NavigateTo("/recipes/manage");
+        Navigation.NavigateTo("/recipe/manage");
     }
 
     private async Task UploadFiles(IBrowserFile file)
@@ -212,6 +212,6 @@
 
     private void GoBack()
     {
-        Navigation.NavigateTo("/recipes/manage");
+        Navigation.NavigateTo("/recipe/manage");
     }
 }

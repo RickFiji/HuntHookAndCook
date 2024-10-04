@@ -1,0 +1,65 @@
+﻿@page "/blog/manage"
+@using HuntHookAndCook.Models.Blog
+@using HuntHookAndCook.Data
+@using Microsoft.EntityFrameworkCore
+@inject HuntHookAndCookDbContext DbContext
+@inject NavigationManager Navigation
+@inject ISnackbar Snackbar
+
+<MudContainer>
+    <MudButton Variant="Variant.Outlined" Color="Color.Primary" OnClick="GoBack" Class="mb-5">
+        <MudIcon Icon="@Icons.Material.Filled.ArrowBack" /> Back to Blog Search
+    </MudButton>
+    <MudText Typo="Typo.h4">Manage Blogs</MudText>
+    <MudTable Items="Blogs" Hover="true" Class="mt-4 mb-5">
+        <HeaderContent>
+            <MudTh>Title</MudTh>
+            <MudTh>Description</MudTh>
+            <MudTh>Actions</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Title">@context.Title</MudTd>
+            <MudTd DataLabel="Description">@context.LongDescription</MudTd>
+            <MudTd>
+                <MudButton Variant="Variant.Filled" Color="Color.Secondary" EndIcon="@Icons.Material.Filled.Edit" OnClick="@(() => EditBlog(context))">Edit</MudButton>
+                <MudButton Variant="Variant.Filled" Color="Color.Error" EndIcon="@Icons.Material.Filled.Delete" OnClick="@(() => DeleteBlog(context))">Delete</MudButton>
+            </MudTd>
+        </RowTemplate>
+    </MudTable>
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="AddBlog" EndIcon="@Icons.Material.Filled.Add">Add New Blog</MudButton>
+</MudContainer>
+
+@code {
+    private List<BlogDefinition>? Blogs;
+    private BlogDefinition CurrentBlog = new BlogDefinition();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Blogs = await DbContext.Blogs
+            .OrderBy(x => x.Title)
+            .ToListAsync();
+    }
+
+    private void AddBlog()
+    {
+        Navigation.NavigateTo("blog/manage/card/");
+    }
+
+    private void EditBlog(BlogDefinition blog)
+    {
+        Navigation.NavigateTo($"blog/manage/card/{blog.Id}");
+    }
+
+    private async Task DeleteBlog(BlogDefinition blog)
+    {
+        DbContext.Blogs.Remove(blog);
+        await DbContext.SaveChangesAsync();
+        Blogs = await DbContext.Blogs
+            .ToListAsync();
+    }
+
+    private void GoBack()
+    {
+        Navigation.NavigateTo("/blog/search");
+    }
+}

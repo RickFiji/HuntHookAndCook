@@ -1,4 +1,4 @@
-﻿@page "/recipes/search"
+﻿@page "/recipe/search"
 @using HuntHookAndCook.Models.Recipe
 @using HuntHookAndCook.Data
 @using Microsoft.AspNetCore.WebUtilities
@@ -8,7 +8,7 @@
 
 <MudContainer>
     <MudTextField @bind-Value="title" Label="Search by Title" Variant="Variant.Outlined" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" OnKeyUp="SearchRecipes" Class="mb-4" />
-    <MudButtonGroup Exclusive="true" Class="mb-4">
+    <MudButtonGroup Exclusive="true">
         @foreach (var cat in categories)
         {
             <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="() => SelectCategory(cat)" Class="mr-2">
@@ -17,8 +17,8 @@
         }
     </MudButtonGroup>
     <MudButton Variant="Variant.Filled" Color="Color.Secondary" Size="Size.Large" OnClick="ResetSearch">Reset</MudButton>
-    <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" EndIcon="@Icons.Material.Filled.Settings" Href="/recipes/manage">Manage</MudButton>
-    <MudGrid>
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" EndIcon="@Icons.Material.Filled.Settings" Href="/recipe/manage">Manage</MudButton>
+    <MudGrid Class="mt-1">
         @foreach (var recipe in filteredRecipes)
         {
             <MudItem xs="12" sm="6" md="4" lg="3">
@@ -59,7 +59,7 @@
         if (e.Key == "Enter")
         {
             FilterRecipes();
-            Navigation.NavigateTo($"/recipes/search?s={category}&t={title}", true);
+            Navigation.NavigateTo($"/recipe/search?s={category}&t={title}", true);
         }
     }
 
@@ -67,14 +67,14 @@
     {
         category = selectedCategory;
         FilterRecipes();
-        Navigation.NavigateTo($"/recipes/search?s={category}&t={title}", true);
+        Navigation.NavigateTo($"/recipe/search?s={category}&t={title}", true);
     }
     private void ResetSearch()
     {
         category = null;
         title = null;
         FilterRecipes();
-        Navigation.NavigateTo("/recipes/search", true);
+        Navigation.NavigateTo("/recipe/search", true);
     }
     private void FilterRecipes()
     {
