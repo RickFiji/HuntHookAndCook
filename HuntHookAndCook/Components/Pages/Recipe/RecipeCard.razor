@@ -6,7 +6,7 @@
 @inject HuntHookAndCookDbContext DbContext
 
 <MudCard Class="mx-auto my-4" Style="max-width: 600px;">
-    <MudCardMedia Image="@imageSrc" Alt="Recipe Image" Height="200" />
+    <MudImage Src="@imageSrc" Alt="Recipe Image" Class="rounded-lg" ObjectFit="ObjectFit.Fill" Fluid="true" />
     <MudCardContent>
         <MudText Typo="Typo.h4">@recipe.Title</MudText>
         <MudText Typo="Typo.subtitle1">@recipe.ShortDescription</MudText>
