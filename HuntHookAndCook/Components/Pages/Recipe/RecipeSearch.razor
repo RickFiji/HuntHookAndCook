@@ -69,13 +69,12 @@
         FilterRecipes();
         Navigation.NavigateTo($"/recipe/search?s={category}&t={title}", true);
     }
+
     private void ResetSearch()
     {
-        category = null;
-        title = null;
-        FilterRecipes();
         Navigation.NavigateTo("/recipe/search", true);
     }
+
     private void FilterRecipes()
     {
         filteredRecipes = recipes
