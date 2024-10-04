@@ -1,15 +1,21 @@
-﻿using HuntHookAndCook.Models.Recipe;
+﻿using HuntHookAndCook.Models.Blog;
+using HuntHookAndCook.Models.Recipe;
 using Microsoft.EntityFrameworkCore;
 
 namespace HuntHookAndCook.Data
 {
     public class HuntHookAndCookDbContext : DbContext
     {
+        // Recipe
         public DbSet<RecipeDefinition> Recipe { get; set; }
         public DbSet<CategoryDefinition> Category { get; set; }
         public DbSet<IngredientDefinition> Ingredient { get; set; }
         public DbSet<StepDefinition> Step { get; set; }
 
+        public DbSet<BlogDefinition> Blogs { get; set; }
+        public DbSet<BlogParagraphDefinition> BlogParagraphs { get; set; }
+
+        // Blog
         public HuntHookAndCookDbContext(DbContextOptions<HuntHookAndCookDbContext> options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -28,6 +34,11 @@ namespace HuntHookAndCook.Data
 
             modelBuilder.Entity<RecipeDefinition>()
                 .HasOne(r => r.Category);
+
+            modelBuilder.Entity<BlogParagraphDefinition>()
+                .HasOne(bp => bp.BlogDefinition)
+                .WithMany(b => b.Paragraphs)
+                .HasForeignKey(bp => bp.BlogDefinitionId);
         }
     }
 }

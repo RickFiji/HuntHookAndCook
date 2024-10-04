@@ -24,9 +24,4 @@
     </Content>
   </ItemGroup>
 
-
-  <ItemGroup>
-    <Folder Include="Models\Blog\" />
-  </ItemGroup>
-
 </Project>
