@@ -27,6 +27,10 @@ namespace HuntHookAndCook.Data
                 .WithOne(i => i.Recipe)
                 .HasForeignKey(i => i.RecipeId);
 
+            modelBuilder.Entity<IngredientDefinition>()
+                .Property(i => i.Quantity)
+                .HasColumnType("decimal(18,2)");
+
             modelBuilder.Entity<RecipeDefinition>()
                 .HasMany(r => r.Steps)
                 .WithOne(s => s.Recipe)
@@ -35,10 +39,12 @@ namespace HuntHookAndCook.Data
             modelBuilder.Entity<RecipeDefinition>()
                 .HasOne(r => r.Category);
 
+
             modelBuilder.Entity<BlogParagraphDefinition>()
                 .HasOne(bp => bp.BlogDefinition)
                 .WithMany(b => b.Paragraphs)
                 .HasForeignKey(bp => bp.BlogDefinitionId);
+
         }
     }
 }
