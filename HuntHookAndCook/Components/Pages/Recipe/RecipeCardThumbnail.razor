@@ -3,7 +3,7 @@
 @inject NavigationManager Navigation
 
 <MudCard Class="recipe-card-thumbnail" @onclick="ShowDetails" Style="cursor: pointer;">
-    <MudCardMedia Image="@imageSrc" Alt="@Recipe.Title" />
+    <MudCardMedia Image="@imageSrc" Alt="@Recipe.Title" Height="200" />
     <MudCardContent>
         <MudText Typo="Typo.h6">@Recipe.Title</MudText>
     </MudCardContent>
