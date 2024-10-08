@@ -39,10 +39,6 @@ builder.Services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuth
 
 builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
 
-//builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-//    .AddEntityFrameworkStores<HuntHookAndCookDbContext>()
-//    .AddDefaultUI();
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
