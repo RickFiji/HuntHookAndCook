@@ -1,6 +1,6 @@
 ﻿@implements IDisposable
-
 @inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
 <MudNavMenu>
     <MudNavLink Href="" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">Home</MudNavLink>
@@ -8,7 +8,8 @@
     <MudNavLink Href="podcast" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Mic">Podcast</MudNavLink>
     <MudNavLink Href="blog/search" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Newspaper">Blog</MudNavLink>
     <MudNavLink Href="https://www.hunthookandcook.shop" Icon="@Icons.Material.Filled.ShoppingBag" Target="_blank">Shop</MudNavLink>
-    @* <MudNavLink Href="auth" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Lock">Auth Required</MudNavLink>
+
+    <MudNavLink Href="auth" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Lock">Auth Required</MudNavLink>
     <AuthorizeView>
         <Authorized>
             <MudNavLink Href="Account/Manage" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Person">@context.User.Identity?.Name</MudNavLink>
@@ -24,7 +25,7 @@
             <MudNavLink Href="Account/Register" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Person">Register</MudNavLink>
             <MudNavLink Href="Account/Login" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Password">Login</MudNavLink>
         </NotAuthorized>
-    </AuthorizeView> *@ 
+    </AuthorizeView> 
 </MudNavMenu>
 
 

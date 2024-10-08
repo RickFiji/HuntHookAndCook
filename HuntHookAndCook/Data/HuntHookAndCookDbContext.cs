@@ -1,10 +1,12 @@
-﻿using HuntHookAndCook.Models.Blog;
+﻿using HuntHookAndCook.Models.Account;
+using HuntHookAndCook.Models.Blog;
 using HuntHookAndCook.Models.Recipe;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace HuntHookAndCook.Data
 {
-    public class HuntHookAndCookDbContext : DbContext
+    public class HuntHookAndCookDbContext(DbContextOptions<HuntHookAndCookDbContext> options) : IdentityDbContext<ApplicationUser>(options)
     {
         // Recipe
         public DbSet<RecipeDefinition> Recipe { get; set; }
@@ -14,9 +16,6 @@ namespace HuntHookAndCook.Data
 
         public DbSet<BlogDefinition> Blogs { get; set; }
         public DbSet<BlogParagraphDefinition> BlogParagraphs { get; set; }
-
-        // Blog
-        public HuntHookAndCookDbContext(DbContextOptions<HuntHookAndCookDbContext> options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

@@ -4,6 +4,7 @@ using HuntHookAndCook.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HuntHookAndCook.Migrations
 {
     [DbContext(typeof(HuntHookAndCookDbContext))]
-    partial class HuntHookAndCookDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241008170818_Adding-Auth-Accounts")]
+    partial class AddingAuthAccounts
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

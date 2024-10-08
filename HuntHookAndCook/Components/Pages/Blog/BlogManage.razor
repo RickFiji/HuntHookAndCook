@@ -1,10 +1,12 @@
 ﻿@page "/blog/manage"
 @using HuntHookAndCook.Models.Blog
 @using HuntHookAndCook.Data
+@using Microsoft.AspNetCore.Authorization
 @using Microsoft.EntityFrameworkCore
 @inject HuntHookAndCookDbContext DbContext
 @inject NavigationManager Navigation
 @inject ISnackbar Snackbar
+@attribute [Authorize(Roles = "Admin")]
 
 <MudContainer>
     <MudButton Variant="Variant.Outlined" Color="Color.Primary" OnClick="GoBack" Class="mb-5">
