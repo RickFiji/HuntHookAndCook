@@ -1,4 +1,5 @@
 using HuntHookAndCook.Data;
+using HuntHookAndCook.Models.Account;
 using Microsoft.AspNetCore.Identity;
 
 namespace HuntHookAndCook.Components.Account

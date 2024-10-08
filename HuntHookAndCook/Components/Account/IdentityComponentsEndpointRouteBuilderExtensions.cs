@@ -1,5 +1,6 @@
 using HuntHookAndCook.Components.Account.Pages;
 using HuntHookAndCook.Components.Account.Pages.Manage;
+using HuntHookAndCook.Models.Account;
 using HuntHookAndCook.Data;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Components.Authorization;

@@ -1,0 +1,70 @@
+﻿@page "/blog/{Title}"
+@using HuntHookAndCook.Data
+@using HuntHookAndCook.Models.Blog
+@using Microsoft.EntityFrameworkCore
+@inject NavigationManager Navigation
+@inject HuntHookAndCookDbContext DbContext
+
+<MudButton Variant="Variant.Outlined" Color="Color.Primary" OnClick="GoBack" Class="mb-5">
+    <MudIcon Icon="@Icons.Material.Filled.ArrowBack" /> Back to Blog Search
+</MudButton>
+
+<MudCard Class="mx-auto my-4" Style="max-width: 600px;">
+    <MudImage Src="@imageSrc" Alt="Blog Banner Image" Class="rounded-lg" ObjectFit="ObjectFit.Fill" Fluid="true" />
+    <MudCardContent>
+        <MudText Typo="Typo.h4">@blog.Title</MudText>
+        <MudText Typo="Typo.subtitle1">@blog.ShortDescription</MudText>
+        <MudDivider Class="my-2" />
+
+        @if (blog.Paragraphs != null)
+        {
+            @foreach (var paragraph in blog.Paragraphs)
+            {
+                <MudText Class="pb-2 pt-2">
+                    @if (!string.IsNullOrEmpty(paragraph.Subheading))
+                    {
+                        <MudText Typo="Typo.h6">@paragraph.Subheading</MudText>
+                    }
+                    <MudText Typo="Typo.body1">@paragraph.Body</MudText>
+                </MudText>
+            }
+        }
+    </MudCardContent>
+</MudCard>
+
+@code {
+    [Parameter]
+    public string? Title { get; set; }
+
+    private BlogDefinition blog = new BlogDefinition();
+    private string? imageSrc;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (string.IsNullOrEmpty(Title))
+        {
+            Navigation.NavigateTo("/blog");
+            return;
+        }
+
+        blog = await DbContext.Blogs
+            .Include(b => b.Paragraphs)
+            .FirstOrDefaultAsync(b => b.Title == Title)
+            ?? throw new InvalidOperationException("Blog not found");
+
+        if (blog == null)
+        {
+            Navigation.NavigateTo("/blog/search");
+            return;
+        }
+
+        imageSrc = blog.BannerImage != null
+            ? $"data:image/png;base64,{Convert.ToBase64String(blog.BannerImage)}"
+            : "Images/image-not-found.jpeg";
+    }
+
+    private void GoBack()
+    {
+        Navigation.NavigateTo("/blog/search");
+    }
+}

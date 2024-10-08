@@ -1,0 +1,82 @@
+﻿@page "/recipe/{Title}"
+@using HuntHookAndCook.Data
+@using HuntHookAndCook.Models.Recipe
+@using Microsoft.EntityFrameworkCore
+@inject NavigationManager Navigation
+@inject HuntHookAndCookDbContext DbContext
+
+<MudCard Class="mx-auto my-4" Style="max-width: 600px;">
+    <MudImage Src="@imageSrc" Alt="Recipe Image" Class="rounded-lg" ObjectFit="ObjectFit.Fill" Fluid="true" />
+    <MudCardContent>
+        <MudText Typo="Typo.h4">@recipe.Title</MudText>
+        <MudText Typo="Typo.subtitle1">@recipe.ShortDescription</MudText>
+        <MudDivider Class="my-2" />
+
+        <MudGrid>
+            <MudItem xs="12" md="6">
+                <MudText Typo="Typo.h6">Ingredients</MudText>
+                <MudList T="RecipeDefinition">
+                    @if (recipe.Ingredients != null)
+                    {
+                        @foreach (var ingredient in recipe.Ingredients)
+                        {
+                            <MudListItem>
+                                <MudText Typo="Typo.body2">@ingredient.Quantity @ingredient.Unit @ingredient.Name</MudText>
+                            </MudListItem>
+                        }
+                    }
+                </MudList>
+            </MudItem>
+            <MudItem xs="12" md="6">
+                <MudText Typo="Typo.h6">Steps</MudText>
+                <MudList T="RecipeDefinition">
+                    @if (recipe.Steps != null)
+                    {
+                        @foreach (var step in recipe.Steps.OrderBy(s => s.Order) ?? Enumerable.Empty<StepDefinition>())
+                        {
+                            <MudListItem>
+                                <MudText Typo="Typo.body2">@step.Order. @step.Description</MudText>
+                            </MudListItem>
+                        }
+                    }
+                </MudList>
+            </MudItem>
+        </MudGrid>
+
+        <MudDivider Class="my-2" />
+        <MudText Typo="Typo.body1">@recipe.LongDescription</MudText>
+    </MudCardContent>
+</MudCard>
+
+@code {
+    [Parameter]
+    public string? Title { get; set; }
+
+    private RecipeDefinition recipe = new RecipeDefinition();
+    private string? imageSrc;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (string.IsNullOrEmpty(Title))
+        {
+            Navigation.NavigateTo("/recipe");
+            return;
+        }
+
+        recipe = await DbContext.Recipe
+            .Include(r => r.Ingredients)
+            .Include(r => r.Steps)
+            .FirstOrDefaultAsync(r => r.Title == Title)
+            ?? throw new InvalidOperationException("Recipe not found");
+
+        if (recipe == null)
+        {
+            Navigation.NavigateTo("/recipe");
+            return;
+        }
+
+        imageSrc = recipe.Image != null
+            ? $"data:image/png;base64,{Convert.ToBase64String(recipe.Image)}"
+            : "Images/image-not-found.jpeg";
+    }
+}

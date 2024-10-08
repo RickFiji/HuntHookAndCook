@@ -1,0 +1,74 @@
+﻿@page "/recipe/manage"
+@using HuntHookAndCook.Models.Recipe
+@using HuntHookAndCook.Data
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.EntityFrameworkCore
+@inject HuntHookAndCookDbContext DbContext
+@inject NavigationManager Navigation
+@inject ISnackbar Snackbar
+@attribute [Authorize(Roles = "Admin")]
+
+<MudContainer>
+    <MudButton Variant="Variant.Outlined" Color="Color.Primary" OnClick="GoBack" Class="mb-5">
+        <MudIcon Icon="@Icons.Material.Filled.ArrowBack" /> Back to Recipe Search
+    </MudButton>
+    <MudText Typo="Typo.h4">Manage Recipes</MudText>
+    <MudTable Items="Recipes" Hover="true" Class="mt-4 mb-5">
+        <HeaderContent>
+            <MudTh>Title</MudTh>
+            <MudTh>Category</MudTh>
+            <MudTh>Description</MudTh>
+            <MudTh>Actions</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Title">@context.Title</MudTd>
+            <MudTd DataLabel="Category">@context.Category?.Name</MudTd>
+            <MudTd DataLabel="Description">@context.LongDescription</MudTd>
+            <MudTd>
+                <MudButton Variant="Variant.Filled" Color="Color.Secondary" EndIcon="@Icons.Material.Filled.Edit" OnClick="@(() => EditRecipe(context))">Edit</MudButton>
+                <MudButton Variant="Variant.Filled" Color="Color.Error" EndIcon="@Icons.Material.Filled.Delete" OnClick="@(() => DeleteRecipe(context))">Delete</MudButton>
+            </MudTd>
+        </RowTemplate>
+    </MudTable>
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="AddRecipe" EndIcon="@Icons.Material.Filled.Add">Add New Recipe</MudButton>
+</MudContainer>
+
+@code {
+    private List<RecipeDefinition>? Recipes;
+    private RecipeDefinition CurrentRecipe = new RecipeDefinition();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Recipes = await DbContext.Recipe
+            .Include(x => x.Category)
+            .OrderBy(x => x.Category.Name)
+            .ThenBy(x => x.Title)
+            .ToListAsync();
+    }
+
+    private void AddRecipe()
+    {
+        Navigation.NavigateTo("recipe/manage/card/");
+    }
+
+    private void EditRecipe(RecipeDefinition recipe)
+    {
+        Navigation.NavigateTo($"recipe/manage/card/{recipe.Id}");
+    }
+
+    private async Task DeleteRecipe(RecipeDefinition recipe)
+    {
+        DbContext.Recipe.Remove(recipe);
+        await DbContext.SaveChangesAsync();
+        Recipes = await DbContext.Recipe
+            .Include(r => r.Category)
+            .Include(r => r.Ingredients)
+            .Include(r => r.Steps)
+            .ToListAsync();
+    }
+
+    private void GoBack()
+    {
+        Navigation.NavigateTo("/recipe/search");
+    }
+}

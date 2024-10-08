@@ -1,0 +1,177 @@
+﻿@page "/blog/manage/card/{Id:int?}"
+@using HuntHookAndCook.Models.Blog
+@using HuntHookAndCook.Data
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.EntityFrameworkCore
+@inject HuntHookAndCookDbContext DbContext
+@inject NavigationManager Navigation
+@inject ISnackbar Snackbar
+@attribute [Authorize(Roles = "Admin")]
+
+<MudButton Variant="Variant.Outlined" Color="Color.Primary" OnClick="GoBack" Class="mb-5">
+    <MudIcon Icon="@Icons.Material.Filled.ArrowBack" /> Back to Manage Blogs
+</MudButton>
+
+<MudCard Class="pa-3">
+    <MudText Typo="Typo.h4">Blog Details</MudText>
+    <MudForm Model="@_blog" @ref="@_form" OnValidSubmit="HandleValidSubmit">
+        <MudCardContent Class="mb-2">
+            <MudTextField @bind-Value="_blog.Title"
+                          For="@(() => _blog.Title)"
+                          Label="Title"
+                          Required="true"
+                          Class="mb-2" />
+            <MudTextField @bind-Value="_blog.ShortDescription"
+                          For="@(() => _blog.ShortDescription)"
+                          Label="Short Description"
+                          Lines="2"
+                          Required="true"
+                          Class="mb-2" />
+            <MudTextField @bind-Value="_blog.LongDescription"
+                          For="@(() => _blog.LongDescription)"
+                          Label="Long Description"
+                          Lines="5"
+                          Required="true" />
+        </MudCardContent>
+
+        <MudCardContent Class="mb-2">
+            <MudText Typo="Typo.h6">Banner Image</MudText>
+            @if (_blog.BannerImage != null)
+            {
+                <MudImage Src="@_imageSrc" Alt="Blog Banner Image" Width="200" />
+            }
+
+            <MudFileUpload T="IBrowserFile" FilesChanged="UploadFiles">
+                <ActivatorContent>
+                    <MudFab Color="Color.Secondary"
+                            StartIcon="@Icons.Material.Filled.Image"
+                            Label="Load picture" />
+                </ActivatorContent>
+            </MudFileUpload>
+
+            @if (_file != null)
+            {
+                <MudText Typo="@Typo.h6">File:</MudText>
+                <MudList T="string">
+                    <MudListItem Icon="@Icons.Material.Filled.AttachFile" @key="@_file">
+                        @_file.Name <code>@_file.Size bytes</code>
+                    </MudListItem>
+                </MudList>
+            }
+        </MudCardContent>
+
+        <MudCardContent>
+            <MudGrid Spacing="20" Class="pt-2 pb-2">
+                <MudItem xs="12" Class="border-grid">
+                    <MudText Typo="Typo.h6" Class="mt-4">Paragraphs</MudText>
+                    @if (_blog.Paragraphs != null)
+                    {
+                        @foreach (var paragraph in _blog.Paragraphs)
+                        {
+                            <MudTextField @bind-Value="paragraph.Subheading"
+                                          For="@(() => paragraph.Subheading)"
+                                          Label="Subheading"
+                                          Class="mb-2" />
+                            <MudTextField @bind-Value="paragraph.Body"
+                                          For="@(() => paragraph.Body)"
+                                          Label="Content"
+                                          Lines="5"
+                                          Required="true"
+                                          Class="mb-4" />
+                            <MudButton Variant="Variant.Outlined" Color="Color.Error" OnClick="@(() => RemoveParagraph(paragraph))" Class="mb-4">Remove</MudButton>
+                        }
+                    }
+                    <MudButton Variant="Variant.Outlined" Color="Color.Primary" OnClick="AddParagraph" Class="mb-4">Add Paragraph</MudButton>
+                </MudItem>
+            </MudGrid>
+        </MudCardContent>
+
+        <MudCardActions>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(async () => await HandleValidSubmit())">Save</MudButton>
+        </MudCardActions>
+    </MudForm>
+</MudCard>
+
+@code {
+    [Parameter] public int? Id { get; set; }
+
+    private IBrowserFile? _file;
+    private MudForm? _form;
+    private string? _imageSrc;
+    private BlogDefinition _blog = new BlogDefinition()
+        {
+            Paragraphs = new List<BlogParagraphDefinition>()
+        };
+
+    protected override async Task OnInitializedAsync()
+    {
+        Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
+
+        if (Id.HasValue)
+        {
+            _blog = await DbContext.Blogs
+                .Include(b => b.Paragraphs)
+                .FirstOrDefaultAsync(b => b.Id == Id.Value) ?? new BlogDefinition
+                    {
+                        Paragraphs = new List<BlogParagraphDefinition>()
+                    };
+
+        }
+        if (_blog.BannerImage != null)
+        {
+            _imageSrc = $"data:image/png;base64,{Convert.ToBase64String(_blog.BannerImage)}";
+        }
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        if (_blog.Id == 0)
+        {
+            DbContext.Blogs.Add(_blog);
+        }
+        else
+        {
+            DbContext.Blogs.Update(_blog);
+        }
+
+        await DbContext.SaveChangesAsync();
+        Snackbar.Add("Blog saved successfully!", Severity.Success);
+        Navigation.NavigateTo("/blog/manage");
+    }
+
+    private async Task UploadFiles(IBrowserFile file)
+    {
+        _file = file;
+        if (file != null)
+        {
+            // Check file size (example: limit to 5MB)
+            const long maxFileSize = 5 * 1024 * 1024;
+            if (file.Size > maxFileSize)
+            {
+                Snackbar.Add("File size exceeds the 5MB limit.", Severity.Error);
+                return;
+            }
+
+            using var stream = new MemoryStream();
+            await file.OpenReadStream(maxFileSize).CopyToAsync(stream);
+            _blog.BannerImage = stream.ToArray();
+            _imageSrc = $"data:image/png;base64,{Convert.ToBase64String(_blog.BannerImage)}";
+        }
+    }
+
+    private void AddParagraph()
+    {
+        _blog.Paragraphs ??= new List<BlogParagraphDefinition>();
+        _blog.Paragraphs.Add(new BlogParagraphDefinition());
+    }
+
+    private void RemoveParagraph(BlogParagraphDefinition paragraph)
+    {
+        _blog.Paragraphs?.Remove(paragraph);
+    }
+
+    private void GoBack()
+    {
+        Navigation.NavigateTo("/blog/manage");
+    }
+}

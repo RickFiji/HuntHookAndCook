@@ -1,3 +1,4 @@
+using HuntHookAndCook.Models.Account;
 using HuntHookAndCook.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;

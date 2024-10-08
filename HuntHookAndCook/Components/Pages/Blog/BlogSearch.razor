@@ -1,0 +1,69 @@
+﻿@page "/blog/search"
+@using HuntHookAndCook.Models.Blog
+@using HuntHookAndCook.Data
+@using Microsoft.AspNetCore.WebUtilities
+@using Microsoft.EntityFrameworkCore
+@inject HuntHookAndCookDbContext DbContext
+@inject NavigationManager Navigation
+
+<MudContainer>
+    <MudTextField @bind-Value="title" Label="Search by Title" Variant="Variant.Outlined" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" OnKeyUp="SearchBlogs" Class="mb-4" />
+    <MudButton Variant="Variant.Filled" Color="Color.Secondary" Size="Size.Large" OnClick="ResetSearch">Reset</MudButton>
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" EndIcon="@Icons.Material.Filled.Settings" Href="/blog/manage">Manage</MudButton>
+    <MudGrid Class="mt-1">
+        @foreach (var blog in filteredBlogs)
+        {
+            <MudItem xs="12" sm="6" md="4" lg="3">
+                <BlogThumbnail Blog="blog"/>
+            </MudItem>
+        }
+    </MudGrid>
+</MudContainer>
+
+@code {
+    private string? title;
+    private List<BlogDefinition> blogs = new List<BlogDefinition>();
+    private List<BlogDefinition> filteredBlogs = new List<BlogDefinition>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var uri = Navigation.ToAbsoluteUri(Navigation.Uri);
+        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("t", out var titleParam))
+        {
+            title = titleParam;
+        }
+
+        blogs = await DbContext.Blogs
+            .Include(b => b.Paragraphs)
+            .ToListAsync();
+        FilterBlogs();
+    }
+
+    private void SearchBlogs(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            FilterBlogs();
+            Navigation.NavigateTo($"/blog/search?t={title}", true);
+        }
+    }
+
+    private void SelectCategory(string? selectedCategory)
+    {
+        FilterBlogs();
+        Navigation.NavigateTo($"/blog/search?t={title}", true);
+    }
+
+    private void ResetSearch()
+    {
+        title = null;
+        Navigation.NavigateTo("/blog/search", true);
+    }
+
+    private void FilterBlogs()
+    {
+        filteredBlogs = blogs
+            .Where(b => string.IsNullOrEmpty(title) || (b.Title != null && b.Title.Contains(title, StringComparison.OrdinalIgnoreCase)))
+            .ToList();
+    }
+}

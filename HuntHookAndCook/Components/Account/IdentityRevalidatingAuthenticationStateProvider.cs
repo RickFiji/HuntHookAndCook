@@ -1,3 +1,4 @@
+using HuntHookAndCook.Models.Account;
 using HuntHookAndCook.Data;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Server;
