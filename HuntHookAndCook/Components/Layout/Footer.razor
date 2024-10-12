@@ -2,16 +2,23 @@
 <MudPaper Class="mt-10 pa-5" Elevation="0" Style="@(string.Format("background-color: {0};", footerBackgroundColor))">
     <MudContainer>
     <MudGrid>
-        <MudItem xs="12" md="6">
-                <MudItem xs="12" md="6" Class="mb-2 d-flex align-items-center">
+        <MudItem xs="12" md="4">
+                <MudItem xs="12" md="12" Class="mb-2 d-flex align-items-center">
                 <MudImage Src="Images/Logo.jpeg" Alt="Logo-Footer" Width="50" Elevation="25" Class="rounded-lg" ObjectFit="ObjectFit.Fill" Fluid="true" />
                 <MudText Typo="Typo.h6" Class="ml-2">Hunt, Hook, & Cook</MudText>
             </MudItem>
-            <MudItem xs="12" md="6" Class="d-flex align-items-center">
+            <MudItem xs="12" md="12" Class="d-flex align-items-center">
                 <MudText Typo="Typo.body2">© @(DateTime.Now.Year) All rights reserved.</MudText>
             </MudItem>
         </MudItem>
-        <MudItem xs="12" md="6">
+        <MudItem xs="12" md="4">
+            <MudText Typo="Typo.h6">Services</MudText>
+            <MudLink Href="recipe/search" Target="_blank" Class="icon-link mr-2">Recipes</MudLink>
+            <MudLink Href="podcast" Target="_blank" Class="icon-link mr-2">Podcast</MudLink>
+            <MudLink Href="blog/search" Target="_blank" Class="icon-link mr-2">Blog</MudLink>
+            <MudLink Href="https://www.hunthookandcook.shop" Target="_blank" Class="icon-link mr-2">Shop</MudLink>
+        </MudItem>
+        <MudItem xs="12" md="4">
             <MudText Typo="Typo.h6">Follow Us</MudText>
             <MudLink Href="https://youtube.com" Target="_blank" Class="icon-link mr-2">
                 <MudIcon Icon="fab fa-youtube" Color="Color.Primary" Size="Size.Large" />
