@@ -1,3 +1,5 @@
+using Azure.Core;
+using Azure.Identity;
 using HuntHookAndCook.Components;
 using HuntHookAndCook.Components.Account;
 using HuntHookAndCook.Data;
@@ -5,6 +7,7 @@ using HuntHookAndCook.Models.Account;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using MudBlazor.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,7 +19,15 @@ builder.Services.AddRazorComponents()
 
 // Database
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-builder.Services.AddDbContext<HuntHookAndCookDbContext>(options => options.UseSqlServer(connectionString));
+//builder.Services.AddDbContext<HuntHookAndCookDbContext>(options => options.UseSqlServer(connectionString));
+builder.Services.AddDbContext<HuntHookAndCookDbContext>(options =>
+    options.UseSqlServer(connectionString, sqlOptions =>
+    {
+        sqlOptions.EnableRetryOnFailure();
+    }));
+
+// Configure Azure AD authentication
+builder.Services.AddSingleton<TokenCredential>(new DefaultAzureCredential());
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 // Auth
