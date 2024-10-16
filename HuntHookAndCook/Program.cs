@@ -67,4 +67,17 @@ app.MapRazorComponents<App>()
 
 app.MapAdditionalIdentityEndpoints();
 
+app.MapGet("/test-connection", async (HuntHookAndCookDbContext dbContext) =>
+{
+    try
+    {
+        var canConnect = await dbContext.Database.CanConnectAsync();
+        return canConnect ? Results.Ok("Connection successful") : Results.Problem("Connection failed");
+    }
+    catch (Exception ex)
+    {
+        return Results.Problem(ex.Message);
+    }
+});
+
 app.Run();
