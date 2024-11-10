@@ -3,7 +3,7 @@ name: Deploy to Azure Web App
 on:
   push:
     branches:
-      - main  # Adjust this to your deployment branch
+      - master
 
 jobs:
   build-and-deploy:
