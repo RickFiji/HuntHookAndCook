@@ -1,3 +1,6 @@
+using Azure.Extensions.AspNetCore.Configuration.Secrets;
+using Azure.Identity;
+using Azure.Security.KeyVault.Secrets;
 using HuntHookAndCook.Components;
 using HuntHookAndCook.Components.Account;
 using HuntHookAndCook.Data;
@@ -14,8 +17,15 @@ builder.Services.AddMudServices();
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
+// Azure Key Vault
+var keyVaultClient = new SecretClient(new Uri($"https://{builder.Configuration["KeyVaultName"]}.vault.azure.net/"), new DefaultAzureCredential());
+builder.Configuration.AddAzureKeyVault(keyVaultClient, new KeyVaultSecretManager());
+
+// Get secret
+KeyVaultSecret secret = keyVaultClient.GetSecret("Sql--Connection--String");
+var connectionString = secret.Value ?? throw new InvalidOperationException("Connection string 'Sql--Connection--String' not found.");
+
 // Database
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 builder.Services.AddDbContext<HuntHookAndCookDbContext>(options => options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
@@ -49,7 +59,6 @@ if (app.Environment.IsDevelopment())
 else
 {
     app.UseExceptionHandler("/Error", createScopeForErrors: true);
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
