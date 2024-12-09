@@ -26,7 +26,13 @@ KeyVaultSecret secret = keyVaultClient.GetSecret("Sql--Connection--String");
 var connectionString = secret.Value ?? throw new InvalidOperationException("Connection string 'Sql--Connection--String' not found.");
 
 // Database
-builder.Services.AddDbContext<HuntHookAndCookDbContext>(options => options.UseSqlServer(connectionString));
+builder.Services.AddDbContext<HuntHookAndCookDbContext>(options => 
+    options.UseSqlServer(connectionString, sqlOptions =>
+        sqlOptions.EnableRetryOnFailure(
+            maxRetryCount: 5,
+            maxRetryDelay: TimeSpan.FromSeconds(30),
+            errorNumbersToAdd: null))
+);
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 // Auth
