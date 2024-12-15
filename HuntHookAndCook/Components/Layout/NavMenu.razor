@@ -9,7 +9,7 @@
     <MudNavLink Href="blog/search" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Newspaper">Blog</MudNavLink>
     <MudNavLink Href="https://www.hunthookandcook.shop" Icon="@Icons.Material.Filled.ShoppingBag" Target="_blank">Shop</MudNavLink>
 
-    @* <MudNavLink Href="auth" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Lock">Auth Required</MudNavLink>
+    @* <MudNavLink Href="auth" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Lock">Auth Required</MudNavLink> *@
     <AuthorizeView>
         <Authorized>
             <MudNavLink Href="Account/Manage" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Person">@context.User.Identity?.Name</MudNavLink>
@@ -22,11 +22,10 @@
             </form>
         </Authorized>
         <NotAuthorized>
-            <MudNavLink Href="Account/Register" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Person">Register</MudNavLink>
             <MudNavLink Href="Account/Login" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Password">Login</MudNavLink>
         </NotAuthorized>
     </AuthorizeView> 
- *@
+
 </MudNavMenu>
 
 
