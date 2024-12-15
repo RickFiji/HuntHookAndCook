@@ -9,7 +9,11 @@
 <MudContainer>
     <MudTextField @bind-Value="title" Label="Search by Title" Variant="Variant.Outlined" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" OnKeyUp="SearchBlogs" Class="mb-4" />
     <MudButton Variant="Variant.Filled" Color="Color.Secondary" Size="Size.Large" OnClick="ResetSearch">Reset</MudButton>
-    <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" EndIcon="@Icons.Material.Filled.Settings" Href="/blog/manage">Manage</MudButton>
+    <AuthorizeView>
+        <Authorized>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" EndIcon="@Icons.Material.Filled.Settings" Href="/blog/manage">Manage</MudButton>
+        </Authorized>
+    </AuthorizeView>
     <MudGrid Class="mt-1">
         @foreach (var blog in filteredBlogs)
         {
